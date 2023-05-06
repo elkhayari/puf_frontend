@@ -62,7 +62,7 @@ function Row(props) {
       const json = await res.json();
       setResponse(json);
       console.log(response);
-      //navigate('/tests/running');
+      navigate('/tests/running');
       //navigate('/tests/running');
     } catch (err) {
       console.log(err);
