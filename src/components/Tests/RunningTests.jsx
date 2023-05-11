@@ -19,6 +19,8 @@ const RunningTests = () => {
     requestProgress();
   }, []);
 
+  // TODO: Filter the running test in the backend 
+
   let requestTests = async () => {
     let response = await fetch('http://127.0.0.1:8000/api/testOp/');
     let data = await response.json();
@@ -58,6 +60,9 @@ const RunningTests = () => {
     }
   }));
 
+  console.log("🚀 ~ file: RunningTests.jsx:88 ~ RunningTests ~ runningTests:", runningTests)
+
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -72,7 +77,7 @@ const RunningTests = () => {
         </TableHead>
 
         <TableBody>
-          {runningTests.map((row) => (
+          {runningTests && runningTests.map((row) => (
             <StyledTableRow key={row.id}>
               <StyledTableCell component="th" scope="row">
                 {row.id}
@@ -82,7 +87,11 @@ const RunningTests = () => {
               <StyledTableCell align="right">{row.usedBy}</StyledTableCell>
               <StyledTableCell align="right">{row.status}</StyledTableCell>
             </StyledTableRow>
-          ))}
+          ))
+            
+            
+          
+          }
         </TableBody>
       </Table>
     </TableContainer>

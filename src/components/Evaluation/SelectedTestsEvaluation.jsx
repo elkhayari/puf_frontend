@@ -41,8 +41,12 @@ const SelectedTestsEvaluation = (props) => {
                 <ListItem disablePadding
                   key={test.id}
                   secondaryAction={
-                    <IconButton color="error" edge="end" aria-label="delete">
-                      <DeleteIcon onClick={ () => deleteObject(index)} />
+                    <IconButton
+                      color="error"
+                      edge="end"
+                      aria-label="delete"
+                      onClick={ () => deleteObject(index)} >
+                      <DeleteIcon />
                     </IconButton>
                   }
                 >
