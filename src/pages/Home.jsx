@@ -1,8 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { Navbar, Sidebar, Other } from '../components';
-import { TestsPage, DevicesPage, EvaluationPage } from './index';
+import {
+  Navbar,
+  Sidebar,
+  Other,
+  RunningTests,
+  CompletedTests,
+  WaitingTests,
+  AddTest,
+  InsertedDevices,
+  ConnectedDevices,
+  Devices,
+  Metrics,
+  EvaluationStepper,
+  Results,
+  Upload
+} from '../components';
+import { TestsPage, EvaluationPage, DevicesPageStatus } from './index';
 
 // Icons
 import { FiSettings } from 'react-icons/fi';
@@ -13,8 +30,10 @@ import { useStateContext } from '../contexts/ContextProvider';
 
 const Home = () => {
   const [user, setUser] = useState('Bob');
+  console.log('HOme Home Home Home HOme');
 
   const { activeMenu } = useStateContext();
+
   return (
     <div className="flex relative dark:bg-main-dark-bg">
       {/** Setting Button */}
@@ -29,6 +48,7 @@ const Home = () => {
           </button>
         </TooltipComponent>
       </div>
+
       {/* sidebar*/}
       {activeMenu ? (
         <div className="w-72 fixed sidebare dark:bg-secondary-dark-bg bg-white">
@@ -39,6 +59,7 @@ const Home = () => {
           <Sidebar />
         </div>
       )}
+
       {/** Navbare */}
       <div
         className={` dark:bg-main-bg bg-main-bg min-h-screen w-full
@@ -51,18 +72,39 @@ const Home = () => {
         {/** Routing */}
         <div>
           <Routes>
-            <Route path="/" exact element={<DevicesPage />} />
-            <Route path="/devices" exact element={<DevicesPage />} />
-            <Route path="/tests/*" element={<TestsPage user={user} />} />
+            <Route path="/" exact element={<Devices />} />
+            <Route path="/devices" element={<Devices />} />
+            <Route path="/insertedDevices" element={<InsertedDevices />} />
+            <Route path="/connectedDevices" element={<ConnectedDevices />} />
+
+            {/**TESTS */}
+            <Route path="/tests" element={<TestsPage user={user} />} />
             <Route
-              path="/evaluation/*"
-              element={<EvaluationPage user={user} />}
+              path="/waitingTests"
+              element={<WaitingTests user={user} />}
             />
-            <Route path="/other" element={<Other />} />
+            <Route
+              path="/runningTests"
+              element={<RunningTests user={user} />}
+            />
+            <Route
+              path="/completedTests"
+              element={<CompletedTests user={user} />}
+            />
+            <Route path="/AddTest" element={<AddTest user={user} />} />
+
+            {/**EVALUATION   */}
+            <Route
+              path="/evaluation"
+              element={<EvaluationStepper user={user} />}
+            />
+            <Route path="/metrics" element={<Metrics />} />
+            <Route path="/uploadMeasurments" element={<Upload />} />
+            <Route path="/results" element={<Results />} />
           </Routes>
-        </div>{' '}
+        </div>
         {/*End Routing */}
-      </div>{' '}
+      </div>
       {/* End Navbare */}
     </div>
   );

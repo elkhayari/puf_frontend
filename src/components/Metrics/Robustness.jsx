@@ -10,7 +10,6 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Table from '@mui/material/Table';
@@ -20,7 +19,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Chip from '@mui/material/Chip';
+import Alert from '@mui/material/Alert';
+
+function ccyFormat(num) {
+  return `${num.toFixed(4)}`;
+}
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -55,6 +58,8 @@ const ExpandMore = styled((props) => {
 
 const Robustness = (props) => {
   const { data } = props;
+  console.log('🚀 ~ file: Robustness.jsx:59 ~ Robustness ~ data:', data);
+
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -62,95 +67,177 @@ const Robustness = (props) => {
   };
   return (
     <>
-      <br />
-      <Chip label="Robustness" color="info" />
+      {data.map((group) =>
+        group.memories.map((memoryGroup) =>
+          memoryGroup.initialValueKey.map((initialValueGroup) =>
+            initialValueGroup.startStopAddresses.map(
+              (addressesGroup, addressesGroupIndex) => {
+                console.log(addressesGroup);
+                return (
+                  <Card sx={{ width: '100%' }} key={addressesGroupIndex}>
+                    <CardHeader
+                      avatar={
+                        <Avatar sx={{ bgcolor: red[500] }} aria-label="chip">
+                          {1}
+                        </Avatar>
+                      }
+                      action={
+                        <IconButton aria-label="settings">
+                          <MoreVertIcon />
+                        </IconButton>
+                      }
+                      title={group.testType}
+                      subheader={memoryGroup.memoryKey}
+                    />
+                    <CardContent>
+                      <Typography variant="body2" color="text.secondary">
+                        Memory Area : {addressesGroup.startAddress} -{' '}
+                        {addressesGroup.stopAddress}
+                      </Typography>
+                      <Typography
+                        sx={{ fontSize: 14 }}
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        Initial Value: {initialValueGroup.initialValue}
+                      </Typography>
+                    </CardContent>
 
-      {data.map((chip) => {
-        return (
-          <Card sx={{ maxWidth: 800 }}>
-            <CardHeader
-              avatar={
-                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                  {chip.chip[0]}
-                </Avatar>
+                    <CardActions disableSpacing>
+                      <Typography
+                        sx={{ flex: '1 1 100%' }}
+                        variant="h6"
+                        id="tableTitle"
+                        component="div"
+                      >
+                        Intra-measurements of Experimental Results
+                      </Typography>
+                      <ExpandMore
+                        expand={expanded}
+                        onClick={handleExpandClick}
+                        aria-expanded={expanded}
+                        aria-label="show more"
+                      >
+                        <ExpandMoreIcon />
+                      </ExpandMore>
+                    </CardActions>
+
+                    <Collapse in={expanded} timeout="auto" unmountOnExit>
+                      <CardContent>
+                        <TableContainer component={Paper}>
+                          <Table
+                            sx={{ width: '100%' }}
+                            aria-label="customized table"
+                          >
+                            <TableHead>
+                              <StyledTableRow>
+                                <StyledTableCell align="center" rowSpan={2}>
+                                  Chip
+                                </StyledTableCell>
+                                <StyledTableCell
+                                  align="center"
+                                  colSpan={addressesGroup.challengeKeys.length}
+                                >
+                                  Challenges
+                                </StyledTableCell>
+                                <StyledTableCell align="left" rowSpan={2}>
+                                  Min
+                                </StyledTableCell>
+                                <StyledTableCell align="left" rowSpan={2}>
+                                  Avg
+                                </StyledTableCell>
+                                <StyledTableCell align="left" rowSpan={2}>
+                                  Max
+                                </StyledTableCell>
+                              </StyledTableRow>
+                              <StyledTableRow>
+                                {addressesGroup.challengeKeys.map((c, i) => (
+                                  <StyledTableCell key={i} align="center">
+                                    {c.challengeName}
+                                  </StyledTableCell>
+                                ))}
+                              </StyledTableRow>
+                            </TableHead>
+
+                            <TableBody>
+                              {addressesGroup.chipInstances.map(
+                                (chipGroup, index) =>
+                                  chipGroup.challenges.map(
+                                    (challengeGroup, chalengeIndex) =>
+                                      challengeGroup.challenge_measuremenst.map(
+                                        (meas, j) => {
+                                          return (
+                                            <TableRow key={j}>
+                                              {chalengeIndex === 0 && (
+                                                <TableCell
+                                                  align="center"
+                                                  rowSpan={
+                                                    chipGroup.challenges.length
+                                                  }
+                                                >
+                                                  {chipGroup.chipLabel}
+                                                </TableCell>
+                                              )}{' '}
+                                              {/* DISPLAY CHIP LAEL */}
+                                              {challengeGroup.challenge.map(
+                                                (c, i) => {
+                                                  console.log(c);
+                                                  return (
+                                                    <StyledTableCell
+                                                      align="center"
+                                                      key={i}
+                                                      rowSpan={
+                                                        challengeGroup
+                                                          .challenge_measuremenst
+                                                          .length
+                                                      }
+                                                    >
+                                                      {c.challengeValue}
+                                                    </StyledTableCell>
+                                                  );
+                                                }
+                                              )}
+                                              {meas.Robustness ? (
+                                                <>
+                                                  <StyledTableCell align="left">
+                                                    {meas.hammingDistance.min}
+                                                  </StyledTableCell>
+                                                  <StyledTableCell align="left">
+                                                    {meas.hammingDistance.avg}
+                                                  </StyledTableCell>
+                                                  <StyledTableCell align="left">
+                                                    {meas.hammingDistance.max}
+                                                  </StyledTableCell>
+                                                </>
+                                              ) : (
+                                                <StyledTableCell
+                                                  colSpan={3}
+                                                  align="left"
+                                                >
+                                                  <Alert severity="warning">
+                                                    You need at least two
+                                                    measurments!
+                                                  </Alert>
+                                                </StyledTableCell>
+                                              )}
+                                            </TableRow>
+                                          );
+                                        }
+                                      )
+                                  )
+                              )}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </CardContent>
+                    </Collapse>
+                  </Card>
+                );
               }
-              action={
-                <IconButton aria-label="settings">
-                  <MoreVertIcon />
-                </IconButton>
-              }
-              title="Write Latency"
-              subheader="March 26, 2023"
-            />
-
-            <CardContent>
-              <Typography variant="body2" color="text.secondary">
-                MEmory: FRAM
-              </Typography>
-              <Typography
-                sx={{ fontSize: 14 }}
-                color="text.secondary"
-                gutterBottom
-              >
-                Initail Value: 0x55
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Challenge: Data Setup Time
-              </Typography>
-            </CardContent>
-            <CardActions disableSpacing>
-              <IconButton aria-label="add to favorites">
-                <FavoriteIcon />
-              </IconButton>
-              <ExpandMore
-                expand={expanded}
-                onClick={handleExpandClick}
-                aria-expanded={expanded}
-                aria-label="show more"
-              >
-                <ExpandMoreIcon />
-              </ExpandMore>
-            </CardActions>
-
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
-              <CardContent>
-                <TableContainer component={Paper}>
-                  <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                    <TableHead>
-                      <TableRow>
-                        <StyledTableCell align="center">
-                          Data Setup Time
-                        </StyledTableCell>
-                        <StyledTableCell align="left">min</StyledTableCell>
-                        <StyledTableCell align="left">max</StyledTableCell>
-                        <StyledTableCell align="left">avg</StyledTableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {chip.chipMeasurements.map((row) => (
-                        <StyledTableRow key={row.challengeValue}>
-                          <StyledTableCell align="center">
-                            {row.challengeValue}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {row.hammingDistance.min}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {row.hammingDistance.min}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {row.hammingDistance.min}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </CardContent>
-            </Collapse>
-          </Card>
-        );
-      })}
+            )
+          )
+        )
+      )}
     </>
   );
 };

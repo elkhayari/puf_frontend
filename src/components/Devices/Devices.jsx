@@ -14,13 +14,13 @@ import {
 } from '@syncfusion/ej2-react-grids';
 import ClipLoader from 'react-spinners/ClipLoader';
 
-import { Header } from '../../components';
+import { Header } from '..';
 
-import { Devices } from '../../components';
+import { Device } from '..';
 
 import { contextMenuItems } from '../../data/dummy';
 
-import { useDevices } from '../../components';
+import { useDevices } from '..';
 
 const override = {
   display: 'block',
@@ -48,11 +48,12 @@ export const deviceStatus = (props) => (
   </button>
 );
 
-export const DevicesPage = () => {
+export const Devices = () => {
   const [devices, setDevices] = useState([]);
   const [stmState, setStmState] = useState(null);
   const [page, setPage] = useState(1);
   const { data, isLoading } = useDevices();
+  console.log('Devices');
 
   console.log(data);
   console.log(isLoading);
@@ -162,11 +163,10 @@ export const DevicesPage = () => {
   }
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-      <Header category="Dashboard" title="Devices" />
       <GridComponent
         id="gridcomp"
         dataSource={data}
-        rowTemplate={Devices}
+        rowTemplate={Device}
         allowPaging
         allowSorting
         allowExcelExport
@@ -175,7 +175,6 @@ export const DevicesPage = () => {
       >
         <ColumnsDirective>
           {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-          <ColumnDirective headerText="Image" width="90" textAlign="Center" />
           <ColumnDirective
             headerText="Device Id"
             width="90"
@@ -223,4 +222,4 @@ export const DevicesPage = () => {
   );
 };
 
-export default DevicesPage;
+export default Devices;

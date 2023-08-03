@@ -2,7 +2,34 @@ import { BiDevices } from 'react-icons/bi';
 import { TbTruckLoading } from 'react-icons/tb';
 
 export const boards = ['STM32F429-Disc'];
-export const memories = ['FRAM_CH6', 'FRAM_CH3', 'FRAM_R2'];
+export const memoryTypes = ['MRAM', 'FRAM'];
+export const memoryBrands = [
+  'NXP',
+  'Everspin',
+  'Cypress',
+  'Fujitsu',
+  'ROHM',
+  'Ramtron'
+];
+export const MRAMModels = [
+  'MR2A16ATS35C',
+  'MR25H256ACDF',
+  'MR4A16BUYS45',
+  'MR2A16AVYS35R'
+];
+export const FRAMModels = [
+  'CY15B104Q-SXI',
+  'FM22L16-55-TG',
+  'CY15B108QN-20LPXCES',
+  'MB85R4002ANC-GE1',
+  'MB85R4M2TFN-G-ASE1',
+  'MB85RC256V: Adafruit I2C Non-Vola',
+  'MB85RS64V: Adafruit SPI Non-Vola',
+  'MR45V200BRAZAARL',
+  'MR44V100AMAZAATL',
+  'MR48V256CTAZAARL',
+  'FM31L278-G'
+];
 
 export const testTypes = [
   {
@@ -44,11 +71,22 @@ export const gridOrderStatus = (props) => (
 
 export const links = [
   {
-    title: 'Dashboard',
+    title: 'Boards',
     links: [
       {
-        name: 'Devices',
-        path: 'Devices',
+        name: 'All',
+        path: 'devices',
+        icon: <BiDevices />
+      },
+      {
+        name: 'Inserted boards',
+        path: 'insertedDevices',
+        isBadgeVisible: true,
+        icon: <BiDevices />
+      },
+      {
+        name: 'Connected boards',
+        path: 'connectedDevices',
         icon: <BiDevices />
       }
     ]
@@ -64,17 +102,22 @@ export const links = [
       },
       {
         name: 'Waiting',
-        path: 'tests/waiting',
+        path: 'waitingTests',
         icon: <TbTruckLoading />
       },
       {
         name: 'Running',
-        path: 'tests/running',
+        path: 'runningTests',
         icon: <TbTruckLoading />
       },
       {
         name: 'Comleted',
-        path: 'tests/completed',
+        path: 'completedTests',
+        icon: <TbTruckLoading />
+      },
+      {
+        name: 'Add',
+        path: 'AddTest',
         icon: <TbTruckLoading />
       }
     ]
@@ -88,8 +131,13 @@ export const links = [
         icon: <TbTruckLoading />
       },
       {
-        name: 'My Experiments',
-        path: 'evaluation/experiments',
+        name: 'Results',
+        path: 'results',
+        icon: <TbTruckLoading />
+      },
+      {
+        name: 'Upload Measurments',
+        path: 'uploadMeasurments',
         icon: <TbTruckLoading />
       }
     ]

@@ -30,10 +30,20 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 );
 
 const Navbar = () => {
-  const { activeMenu, setActiveMenu } = useStateContext();
+  const { activeMenu, setActiveMenu, screenSize, setScreenSize, currentColor } =
+    useStateContext();
   const { isClicked, setIsClicked } = useStateContext();
   const { handleClick } = useStateContext();
-  const screenSize = 1000;
+
+  useEffect(() => {
+    const handleResize = () => setScreenSize(window.innerWidth);
+
+    window.addEventListener('resize', handleResize);
+
+    handleResize();
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (screenSize <= 900) {
@@ -43,13 +53,15 @@ const Navbar = () => {
     }
   }, [screenSize]);
 
+  const handleActiveMenu = () => setActiveMenu(!activeMenu);
+
   return (
     <div className="flex justify-between p-2 md:ml-6 md:mr-6 relative">
       <NavButton
         title="Show Menu"
-        customFunc={() => setActiveMenu((prevActiveMenu) => !prevActiveMenu)}
         icon={<AiOutlineMenu />}
-        color="blue"
+        customFunc={handleActiveMenu}
+        color={currentColor}
       />
       <div className="flex">
         <NavButton
@@ -57,7 +69,7 @@ const Navbar = () => {
           customFunc={() => handleClick('notification')}
           icon={<RiNotification3Line />}
           color="blue"
-          dotColor="rgb(254, 201, 15)"
+          dotColor="#03C9D7"
         />
 
         <TooltipComponent content="Profile" position="BottomCenter">
@@ -67,8 +79,8 @@ const Navbar = () => {
           >
             <FaUserSecret className="rounded-full w-8 h-8" />
             <p>
-              <span className="text-gray-400 text-14">Hi,</span>{' '}
-              <span className="text-gray-400 font-bold ml-1 text-14">
+              <span className="text-blue-800 text-14">Hi,</span>{' '}
+              <span className="text-blue-800 font-bold ml-1 text-14">
                 Abdel
               </span>
             </p>

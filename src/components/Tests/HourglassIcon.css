@@ -1,0 +1,21 @@
+.green-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #127912; /* Green color */
+    position: relative;
+    animation: lightning 1s infinite;
+  }
+  
+  @keyframes lightning {
+    0% {
+      box-shadow: 0 0 5px 1px #127912, 0 0 8px 1px #127912, 0 0 12px 2px #65d265, 0 0 15px 4px #00ff00;
+    }
+    50% {
+      box-shadow: none;
+    }
+    100% {
+      box-shadow: 0 0 5px 1px #127912, 0 0 8px 1px #127912, 0 0 12px 2px #4ed34e, 0 0 15px 4px #00ff00;
+    }
+  }
+  

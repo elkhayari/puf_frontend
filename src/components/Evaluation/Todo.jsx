@@ -1,57 +1,85 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function TodoList() {
-  const [todos, setTodos] = useState(JSON.parse(localStorage.getItem('todos')) || []);
-  const [inputValue, setInputValue] = useState('');
+  const [files, setFiles] = useState([]);
+  const [titles, setTitles] = useState([]);
+  const [descriptions, setDescriptions] = useState([]);
 
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
-
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setFiles(selectedFiles);
   };
 
-  const handleAddTodo = () => {
-    if (inputValue.trim() !== '') {
-      setTodos([...todos, { text: inputValue, completed: false }]);
-      setInputValue('');
+  const handleTitleChange = (e, index) => {
+    const updatedTitles = [...titles];
+    updatedTitles[index] = e.target.value;
+    setTitles(updatedTitles);
+  };
+
+  const handleDescriptionChange = (e, index) => {
+    const updatedDescriptions = [...descriptions];
+    updatedDescriptions[index] = e.target.value;
+    setDescriptions(updatedDescriptions);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+
+    files.forEach((file, index) => {
+      formData.append('file', file);
+      formData.append('title', titles[index]);
+      formData.append('body', descriptions[index]);
+      formData.append('slug', '1234');
+    });
+
+    try {
+      await axios
+        .post('http://127.0.0.1:8000/api/posts/', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then((res) => {
+          console.log(res.data);
+        });
+      // Form submission successful, do something
+    } catch (error) {
+      // Error handling
     }
   };
 
-  const handleToggleTodo = (index) => {
-    setTodos(
-      todos.map((todo, i) =>
-        i === index ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
-  };
-
-  const handleDeleteTodo = (index) => {
-    setTodos(todos.filter((todo, i) => i !== index));
-  };
-
   return (
-    <div>
-      <h1>Todo List</h1>
-      <input type="text" value={inputValue} onChange={handleInputChange} />
-      <button onClick={handleAddTodo}>Add</button>
-      <ul>
-        {todos.map((todo, index) => (
-          <li key={index}>
-            <input
-              type="checkbox"
-              checked={todo.completed}
-              onChange={() => handleToggleTodo(index)}
-            />
-            <span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
-              {todo.text}
-            </span>
-            <button onClick={() => handleDeleteTodo(index)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <form onSubmit={handleSubmit}>
+      {files.map((file, index) => (
+        <div key={index}>
+          <label>Title:</label>
+          <input
+            type="text"
+            value={titles[index] || ''}
+            onChange={(e) => handleTitleChange(e, index)}
+          />
+          <br />
+          <label>Description:</label>
+          <input
+            type="text"
+            value={descriptions[index] || ''}
+            onChange={(e) => handleDescriptionChange(e, index)}
+          />
+          <br />
+          <label>CSV File:</label>
+          <input type="file" onChange={handleFileChange} />
+          <br />
+        </div>
+      ))}
+      <button type="button" onClick={() => setFiles([...files, null])}>
+        Add Another File
+      </button>
+      <br />
+      <button type="submit">Upload</button>
+    </form>
   );
 }
 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>WebSocket Logging</title>
+</head>
+<body>
+  <h1>WebSocket Logging Example</h1>
+  <div id="log"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/web-socket-js/1.0.0/web_socket.js"></script>
+  <script>
+    var socket = new WebSocket("ws://localhost:8765"); // Replace with your WebSocket server URL
+
+    socket.onopen = function() {
+      console.log("WebSocket connection established!");
+      var logElement = document.getElementById("log");
+      logElement.innerHTML = "WebSocket connection established!";
+    };
+
+    socket.onmessage = function(event) {
+      console.log("Received message: " + event.data);
+    };
+
+    socket.onclose = function(event) {
+      console.log("WebSocket connection closed with code: " + event.code);
+    };
+  </script>
+</body>
+</html>

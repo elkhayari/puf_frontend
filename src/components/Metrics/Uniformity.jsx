@@ -23,6 +23,10 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Chip from '@mui/material/Chip';
 
+function ccyFormat(num) {
+  return `${num.toFixed(4)}`;
+}
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -64,110 +68,172 @@ export default function Uniformity(props) {
 
   return (
     <>
-      <Chip label="Uniformity" color="info" />
-      {data.map((chip) => {
-        return (
-          <Card sx={{ maxWidth: 800 }}>
-            <CardHeader
-              avatar={
-                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                  {chip.chip[0]}
-                </Avatar>
-              }
-              action={
-                <IconButton aria-label="settings">
-                  <MoreVertIcon />
-                </IconButton>
-              }
-              title="Write Latency"
-              subheader="March 26, 2023"
-            />
+      {data.map((group) =>
+        group.memories.map((memoryGroup, memoryIndex) =>
+          memoryGroup.initialValueKey.map(
+            (initialValueGroup, initialValueIndex) =>
+              initialValueGroup.startStopAddresses.map(
+                (addressesGroup, addressesGroupIndex) => {
+                  return (
+                    <Card sx={{ width: '100%' }} key={addressesGroupIndex}>
+                      <CardHeader
+                        avatar={
+                          <Avatar sx={{ bgcolor: red[500] }} aria-label="chip">
+                            {1}
+                          </Avatar>
+                        }
+                        action={
+                          <IconButton aria-label="settings">
+                            <MoreVertIcon />
+                          </IconButton>
+                        }
+                        title={group.testType}
+                        subheader={memoryGroup.memoryKey}
+                      />
+                      <CardContent>
+                        <Typography variant="body2" color="text.secondary">
+                          Memory Area : {addressesGroup.startAddress} -{' '}
+                          {addressesGroup.stopAddress}
+                        </Typography>
+                        <Typography
+                          sx={{ fontSize: 14 }}
+                          color="text.secondary"
+                          gutterBottom
+                        >
+                          Initial Value: {initialValueGroup.initialValue}
+                        </Typography>
+                      </CardContent>
 
-            <CardContent>
-              <Typography variant="body2" color="text.secondary">
-                MEmory: {chip.chip}
-              </Typography>
-              <Typography
-                sx={{ fontSize: 14 }}
-                color="text.secondary"
-                gutterBottom
-              >
-                Initail Value: 0x55
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Challenge: Data Setup Time
-              </Typography>
-            </CardContent>
-            <CardActions disableSpacing>
-              <IconButton aria-label="add to favorites">
-                <FavoriteIcon />
-              </IconButton>
-              <ExpandMore
-                expand={expanded}
-                onClick={handleExpandClick}
-                aria-expanded={expanded}
-                aria-label="show more"
-              >
-                <ExpandMoreIcon />
-              </ExpandMore>
-            </CardActions>
+                      <CardActions disableSpacing>
+                        <Typography
+                          sx={{ flex: '1 1 100%' }}
+                          variant="h6"
+                          id="tableTitle"
+                          component="div"
+                        >
+                          Fractional Hamming Weight of Experimental Results
+                        </Typography>
+                        <ExpandMore
+                          expand={expanded}
+                          onClick={handleExpandClick}
+                          aria-expanded={expanded}
+                          aria-label="show more"
+                        >
+                          <ExpandMoreIcon />
+                        </ExpandMore>
+                      </CardActions>
 
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
-              <CardContent>
-                <TableContainer component={Paper}>
-                  <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                    <TableHead>
-                      <TableRow>
-                        <StyledTableCell align="center">
-                          Data Setup Time
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          Iteration
-                        </StyledTableCell>
-                        <StyledTableCell align="left">Zeros</StyledTableCell>
-                        <StyledTableCell align="left">Ones</StyledTableCell>
-                        <StyledTableCell align="left">
-                          Hamming Weight
-                        </StyledTableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {chip.chipMeasurements.map((row) => (
-                        <>
-                          <TableRow>
-                            <StyledTableCell
-                              rowSpan={row.challengeMeasurements.length + 1}
-                              align="center"
+                      <Collapse in={expanded} timeout="auto" unmountOnExit>
+                        <CardContent>
+                          <TableContainer component={Paper}>
+                            <Table
+                              sx={{ width: '100%' }}
+                              aria-label="customized table"
                             >
-                              {row.challengeValue}
-                            </StyledTableCell>
-                          </TableRow>
-                          {row.challengeMeasurements.map((meas) => (
-                            <TableRow>
-                              <StyledTableCell align="left">
-                                {meas.iteration}
-                              </StyledTableCell>
-                              <StyledTableCell align="left">
-                                {meas.zeors}
-                              </StyledTableCell>
-                              <StyledTableCell align="left">
-                                {meas.ones}
-                              </StyledTableCell>
-                              <StyledTableCell align="left">
-                                {meas.hammingWeight}
-                              </StyledTableCell>
-                            </TableRow>
-                          ))}
-                        </>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </CardContent>
-            </Collapse>
-          </Card>
-        );
-      })}
+                              <TableHead>
+                                <StyledTableRow>
+                                  <StyledTableCell
+                                    align="center"
+                                    colSpan={
+                                      addressesGroup.challengeKeys.length
+                                    }
+                                  >
+                                    Challenges
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center" rowSpan={2}>
+                                    Chip
+                                  </StyledTableCell>
+                                  <StyledTableCell align="left" rowSpan={2}>
+                                    Iteration
+                                  </StyledTableCell>
+                                  <StyledTableCell align="left" rowSpan={2}>
+                                    Zeros
+                                  </StyledTableCell>
+                                  <StyledTableCell align="left" rowSpan={2}>
+                                    Ones
+                                  </StyledTableCell>
+                                  <StyledTableCell align="left" rowSpan={2}>
+                                    Gaps
+                                  </StyledTableCell>
+                                  <StyledTableCell align="left" rowSpan={2}>
+                                    Hamming Weight
+                                  </StyledTableCell>
+                                </StyledTableRow>
+                                <StyledTableRow>
+                                  {addressesGroup.challengeKeys.map(
+                                    (challenge, i) => (
+                                      <StyledTableCell key={i} align="center">
+                                        {challenge}
+                                      </StyledTableCell>
+                                    )
+                                  )}
+                                </StyledTableRow>
+                              </TableHead>
+
+                              <TableBody>
+                                {addressesGroup.challenges.map(
+                                  (challengeGroup) => {
+                                    console.log(challengeGroup);
+                                    return (
+                                      <>
+                                        {challengeGroup.challenge_measuremenst.map(
+                                          (meas, i) => (
+                                            <TableRow key={i}>
+                                              {i === 0 &&
+                                                challengeGroup.challenge.map(
+                                                  (c, j) => (
+                                                    <TableCell
+                                                      align="center"
+                                                      rowSpan={
+                                                        challengeGroup
+                                                          .challenge_measuremenst
+                                                          .length
+                                                      }
+                                                    >
+                                                      {c.challengeValue}
+                                                    </TableCell>
+                                                  )
+                                                )}{' '}
+                                              {/* DISPLAY chalenge values */}
+                                              <StyledTableCell align="left">
+                                                {meas.memoryLabel}
+                                              </StyledTableCell>
+                                              <StyledTableCell align="left">
+                                                {meas.iteration}
+                                              </StyledTableCell>
+                                              <StyledTableCell align="left">
+                                                {meas.zeros}
+                                              </StyledTableCell>
+                                              <StyledTableCell align="left">
+                                                {meas.ones}
+                                              </StyledTableCell>
+                                              <StyledTableCell align="left">
+                                                {meas.gaps}
+                                              </StyledTableCell>
+                                              <StyledTableCell align="left">
+                                                {`${ccyFormat(
+                                                  meas.hammingWeight
+                                                )}`}
+                                              </StyledTableCell>
+                                            </TableRow>
+                                          )
+                                        )}
+                                      </>
+                                    );
+                                  }
+                                )}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </CardContent>
+                      </Collapse>
+                    </Card>
+                  );
+                }
+              )
+          )
+        )
+      )}
     </>
   );
 }

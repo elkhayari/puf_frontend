@@ -7,6 +7,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import AddTaskSharpIcon from '@mui/icons-material/AddTaskSharp';
+
+import { Header } from '../index';
+
 const CompletedTests = () => {
   const [runningTests, setRunningTests] = useState([]);
   const [testProgress, setTestProgress] = useState(0);
@@ -20,10 +24,25 @@ const CompletedTests = () => {
   }, []);
 
   let requestTests = async () => {
-    let response = await fetch('http://127.0.0.1:8000/api/testOp/');
-    let data = await response.json();
-    console.log('Running Tests DATA:', data);
-    setRunningTests(data.filter((test) => test.status === 'completed'));
+    try {
+      const filter = 'completed'; // Your filter parameter value
+      let response = await fetch(
+        `http://127.0.0.1:8000/testsApi/measurmentsStatus/?filter=${filter}`
+      );
+      let data = await response.json();
+      console.log('completed Tests DATA:', data);
+      const completed_tests = Object.values(data).reduce(
+        (acc, array) => acc.concat(array),
+        []
+      );
+      console.log(
+        '🚀 ~ file: RunningTests.jsx:29 ~ requestTests ~ completed_tests:',
+        completed_tests
+      );
+      setRunningTests(completed_tests);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
   let requestProgress = async () => {
@@ -59,33 +78,50 @@ const CompletedTests = () => {
   }));
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>ID</StyledTableCell>
-            <StyledTableCell align="right">Type</StyledTableCell>
-            <StyledTableCell align="right">Title</StyledTableCell>
-            <StyledTableCell align="right">Created by</StyledTableCell>
-            <StyledTableCell align="right">Status</StyledTableCell>
-          </TableRow>
-        </TableHead>
+    <div className="m-2 md:m-10 mt-24 p-2 md:p-10 rounded-3xl">
+      <Header category="Dashboard" title="Completed Tests" />
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>ID</StyledTableCell>
+              <StyledTableCell align="left">Type</StyledTableCell>
+              <StyledTableCell align="left">Memory</StyledTableCell>
+              <StyledTableCell align="left">Data Setup Time</StyledTableCell>
+              <StyledTableCell align="left">Iteration</StyledTableCell>
+              <StyledTableCell align="left">Status</StyledTableCell>
+            </TableRow>
+          </TableHead>
 
-        <TableBody>
-          {runningTests.map((row) => (
-            <StyledTableRow key={row.id}>
-              <StyledTableCell component="th" scope="row">
-                {row.id}
-              </StyledTableCell>
-              <StyledTableCell align="right">Type</StyledTableCell>
-              <StyledTableCell align="right">Title</StyledTableCell>
-              <StyledTableCell align="right">{row.usedBy}</StyledTableCell>
-              <StyledTableCell align="right">{row.status}</StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          <TableBody>
+            {runningTests.map((row) => (
+              <StyledTableRow key={row.id}>
+                <StyledTableCell component="th" scope="row">
+                  {row.id}
+                </StyledTableCell>
+                <StyledTableCell align="left">{row.testType}</StyledTableCell>
+                <StyledTableCell align="left">
+                  <span className="primary">{row.memoryLabel}</span>
+                  <br />
+                  <span className="secondary">{row.memoryBrand}</span>
+                  {' / '}
+                  <span className="secondary">{row.memoryModel}</span>
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.dataSetupTime}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.iteration}
+                </StyledTableCell>
+                <StyledTableCell align="left">
+                  <AddTaskSharpIcon style={{ color: 'green' }} />
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
   );
 };
 

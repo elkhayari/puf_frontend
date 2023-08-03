@@ -6,11 +6,7 @@ import {
   Tests,
   AddTest,
   TestDetail,
-  SearchTests,
-  TestNavbar,
-  RunningTests,
-  CompletedTests,
-  WaitingTests
+  SearchTests
 } from '../../components';
 
 const TestsPage = ({ user }) => {
@@ -19,14 +15,8 @@ const TestsPage = ({ user }) => {
   console.log('SearchTerm : ', searchTerm);
 
   return (
-    <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-      <Header category="Daschboard" title="Tests" />
-
-      <TestNavbar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        user={user && user}
-      />
+    <div className="m-2 md:m-10 mt-24 p-2 md:p-10 rounded-3xl">
+      <Header category="Dashboard" title="All Tests" />
 
       <div className="h-full">
         <Routes>
@@ -36,18 +26,6 @@ const TestsPage = ({ user }) => {
             path="/test-detail/:testId"
             element={<TestDetail user={user} />}
           />
-          <Route
-            path="/search"
-            element={
-              <SearchTests
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-              />
-            }
-          />
-          <Route path="/waiting" element={<WaitingTests user={user} />} />
-          <Route path="/running" element={<RunningTests user={user} />} />
-          <Route path="/completed" element={<CompletedTests user={user} />} />
         </Routes>
       </div>
     </div>

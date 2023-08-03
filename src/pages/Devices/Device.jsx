@@ -48,6 +48,13 @@ const Device = (props) => {
   return (
     <>
       <tr className="templateRow">
+        <td className="photo text-center">
+          <img
+            src={favicon}
+            className="w-10 h-10 rounded-full"
+            alt="DeviceImage"
+          />
+        </td>
         <td className="text-center">{props.id}</td>
 
         <td className="text-center">{props.name}</td>

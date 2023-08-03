@@ -1,51 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
-import StepButton from '@mui/material/StepButton';
+import StepLabel from '@mui/material/StepLabel';
+
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Link } from 'react-router-dom';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Measurments from './Measurments'
-import SelectedTestsEvaluation from './SelectedTestsEvaluation'
+import Measurments from './Measurments';
+import SelectedTestsEvaluation from './SelectedTestsEvaluation';
+import { SelectChallengesForm, Header } from '../index';
 
-const steps = ['Select measurements', 'Verify', 'Confirm'];
-
-
+const steps = [
+  'Measurements',
+  'Selected Measurements',
+  'Select Challenges & Evaluate'
+];
 
 export default function EvaluationStepper() {
   const [activeStep, setActiveStep] = React.useState(0);
-  const [completed, setCompleted] = React.useState({});
-  const [measurements, setMeasurements] = useState(JSON.parse(localStorage.getItem('selectedMeasurements')) || []);
+  const [isStepWarning, setIsStepWarning] = useState(true);
+  const [measurements, setMeasurements] = useState(
+    JSON.parse(localStorage.getItem('selectedMeasurements')) || []
+  );
 
-
-  console.log('stepper compomenent')
-  console.log(measurements)
-
-  const totalSteps = () => {
-    return steps.length;
-  };
-
-  const completedSteps = () => {
-    return Object.keys(completed).length;
-  };
-
-  const isLastStep = () => {
-    return activeStep === totalSteps() - 1;
-  };
-
-  const allStepsCompleted = () => {
-    return completedSteps() === totalSteps();
-  };
+  console.log('stepper compomenent');
+  console.log(measurements);
 
   const handleNext = () => {
-    const newActiveStep =
-      isLastStep() && !allStepsCompleted()
-        ? // It's the last step, but not all steps have been completed,
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !(i in completed))
-        : activeStep + 1;
+    const newActiveStep = activeStep + 1;
     setActiveStep(newActiveStep);
   };
 
@@ -53,111 +35,85 @@ export default function EvaluationStepper() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleStep = (step) => () => {
-    setActiveStep(step);
+  const handleIsStepWarning = (value) => {
+    console.log(
+      '🚀 ~ file: EvaluationStepper.jsx:56 ~ handleUpdateRobustnessChallenges ~ value:',
+      value
+    );
+    setIsStepWarning(value);
   };
 
-  const handleComplete = () => {
-    const newCompleted = completed;
-    newCompleted[activeStep] = true;
-    setCompleted(newCompleted);
-    handleNext();
-  };
+  console.log(isStepWarning);
 
-   const handleChildChange = () => {
-    console.log("child changed")
-    // do something else with the new state here, such as updating other state variables or making API requests
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-    setCompleted({});
-  };
-    
   const getStepContent = (step) => {
     switch (step) {
       case 0:
-        return <Measurments onChange={handleChildChange}/>;
+        return <Measurments updateIsStepWarning={handleIsStepWarning} />;
       case 1:
         return <SelectedTestsEvaluation />;
       case 2:
-        return ( <FormControlLabel
-          control={
-            <Link
-              to={{
-                pathname: '/evaluation/metrics'
-              }}
-              state={{ selected: measurements }}
-              variant="outlined"
-            >
-              
-              <Button variant="text">Start The Evaluation</Button>
-
-              
-            </Link>
-          }
-        />);
+        return (
+          <Box sx={{ width: '90%', marginLeft: '5%', marginTop: '20px' }}>
+            <SelectChallengesForm
+              measurements={measurements}
+              isStepWarning={isStepWarning}
+            />
+          </Box>
+        );
       default:
         return 'Unknown step';
     }
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Stepper nonLinear activeStep={activeStep}>
-        {steps.map((label, index) => (
-          <Step key={label} completed={completed[index]}>
-            <StepButton color="inherit" onClick={handleStep(index)}>
-              {label}
-            </StepButton>
-          </Step>
-        ))}
-      </Stepper>
-      <div>
-        {allStepsCompleted() ? (
-          <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>
-              All steps completed - you&apos;re finished
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-              <Box sx={{ flex: '1 1 auto' }} />
-              <Button onClick={handleReset}>Reset</Button>
-            </Box>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1, py: 1 }}>
-                {getStepContent(activeStep)}
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-              <Box sx={{ flex: '1 1 auto' }} />
-              <Button onClick={handleNext} sx={{ mr: 1 }}>
-                Next
-              </Button>
-              {activeStep !== steps.length &&
-                (completed[activeStep] ? (
-                  <Typography variant="caption" sx={{ display: 'inline-block' }}>
-                    Step {activeStep + 1} already completed
-                  </Typography>
-                ) : (
-                  <Button onClick={handleComplete}>
-                    {completedSteps() === totalSteps() - 1
-                      ? 'Finish'
-                      : 'Complete Step'}
-                  </Button>
-                ))}
-            </Box>
-          </React.Fragment>
-        )}
-      </div>
-    </Box>
+    <div className="m-2 md:m-10 mt-10 p-2 md:p-10 rounded-3xl">
+      <Header category="Dashboard" title="Measurements" />
+      <Box sx={{ width: '100%' }}>
+        <Stepper nonLinear activeStep={activeStep}>
+          {steps.map((label, index) => {
+            const labelProps = {};
+            if (index !== 0 && isStepWarning) {
+              labelProps.optional = (
+                <Typography variant="caption" color="#c2410c">
+                  No measurement selected yet
+                </Typography>
+              );
+            }
+
+            return (
+              <Step key={label}>
+                <StepLabel
+                  color={index !== 0 && isStepWarning ? '#c2410c' : '#c24100'}
+                  {...labelProps}
+                >
+                  {label}
+                </StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
+        <React.Fragment>
+          <div sx={{ mt: 2, mb: 1, py: 1 }}>{getStepContent(activeStep)}</div>
+          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            <Button
+              color="inherit"
+              disabled={activeStep === 0}
+              onClick={handleBack}
+              sx={{ mr: 1 }}
+            >
+              Back
+            </Button>
+            <Box sx={{ flex: '1 1 auto' }} />
+            <Button
+              onClick={handleNext}
+              sx={{ mr: 1 }}
+              disabled={activeStep === 2}
+            >
+              Next
+            </Button>
+          </Box>
+        </React.Fragment>
+      </Box>
+    </div>
   );
 }

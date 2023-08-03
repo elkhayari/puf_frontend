@@ -5,7 +5,11 @@ import { TestLayout, Spinner } from '../index';
 
 const Tests = () => {
   const [loading, setLoading] = useState(false);
-  const [tests, setTests] = useState([]);
+  //const [tests, setTests] = useState([]);
+  const [reliabilityTests, setReliabilityTests] = useState([]);
+  const [readLatencyTests, setReadLatencyTests] = useState([]);
+  const [writeLatencyTests, setWriteLatencyTests] = useState([]);
+  const [rowHammeringTests, setRowHammeringTests] = useState([]);
 
   const { testId } = useParams();
 
@@ -21,24 +25,60 @@ const Tests = () => {
   }, [testId]);
 
   let requestTests = async () => {
-    let response = await fetch('http://127.0.0.1:8000/api/tests/');
+    let response = await fetch('http://127.0.0.1:8000/testsApi/tests/');
     let data = await response.json();
     console.log('DATA:', data);
-    setTests(data);
+    setReliabilityTests(data['reliabilityData']);
+    setReadLatencyTests(data['readLatencyData']);
+    setWriteLatencyTests(data['writeLatencyData']);
+    setRowHammeringTests(data['rowHammeringData']);
   };
 
   let requestTestById = async (id) => {
-    // `http://127.0.0.1:8000/api/tests/?board=${board}&memory=${memory}`
-    let response = await fetch(`http://127.0.0.1:8000/api/tests/${id}`);
+    let response = await fetch(`http://127.0.0.1:8000/testsApi/tests/${id}`);
     let data = await response.json();
+
     console.log('DATA:', data);
-    setTests(data);
   };
 
   if (loading) {
     return <Spinner message="Fetching tests" />;
   }
-  return <div>{tests && <TestLayout tests={tests} />}</div>;
+  return (
+    <React.Fragment>
+      {reliabilityTests && (
+        <TestLayout
+          color="#b2ebf2"
+          type="Reliability Tests"
+          tests={reliabilityTests}
+        />
+      )}
+      <br />
+      {readLatencyTests && (
+        <TestLayout
+          color="#81d4fa"
+          type="Read Latency Tests"
+          tests={readLatencyTests}
+        />
+      )}
+      <br />
+      {writeLatencyTests && (
+        <TestLayout
+          color="#80cbc4"
+          type="Write Latency Tests"
+          tests={writeLatencyTests}
+        />
+      )}
+      <br />
+      {rowHammeringTests && (
+        <TestLayout
+          color="#64ffda"
+          type="Row Hammering Tests"
+          tests={rowHammeringTests}
+        />
+      )}
+    </React.Fragment>
+  );
 };
 
 export default Tests;
