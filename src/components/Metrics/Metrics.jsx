@@ -54,6 +54,7 @@ export default function Metrics() {
   const evaluationResult = JSON.parse(location.state?.evaluationResult || {});
 
   console.log(evaluationResult);
+  console.log(evaluationData);
 
   console.log(typeof evaluationResult);
 
@@ -129,7 +130,7 @@ export default function Metrics() {
   return (
     <div className="m-2 md:m-10 mt-10 p-2 md:p-10 rounded-3xl">
       <Header category="Dashboard" title="Results / Metrics" />
-      <Box sx={{ bgcolor: 'background.paper', width: '90%' }}>
+      <Box sx={{ bgcolor: 'background.paper', width: '100%' }}>
         <Divider />
         <AppBar position="static">
           <Tabs
@@ -151,7 +152,10 @@ export default function Metrics() {
           onChangeIndex={handleChangeIndex}
         >
           <TabPanel value={value} index={0} dir={theme.direction}>
-            <Uniformity data={uniformityData} />
+            <Uniformity
+              evaluation_id={evaluationData.id}
+              data={uniformityData}
+            />
           </TabPanel>
           <TabPanel value={value} index={1} dir={theme.direction}>
             <Robustness data={robustnessData} />

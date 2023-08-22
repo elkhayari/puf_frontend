@@ -29,7 +29,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-
 import { CustomTable } from '../../components';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
@@ -270,9 +269,7 @@ const UploadStepper = () => {
           console.log(error);
         }
       }
-    
     });
-   
   };
 
   const getStepContent = (step) => {

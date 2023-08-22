@@ -47,8 +47,6 @@ function Row({ row, onRowChange }) {
     iteration
   } = row;
 
-
-
   const [errors, setErrors] = useState({
     memoryType: '',
     memoryBrand: '',
@@ -80,7 +78,7 @@ function Row({ row, onRowChange }) {
     ));
   };
 
- /*  const handleMemoryLabelChange = (name) => (event) => {
+  /*  const handleMemoryLabelChange = (name) => (event) => {
     console.log(
       '🚀 ~ file: AddTest.jsx:83 ~ memoryLabel ~ event:',
       name,
@@ -158,7 +156,6 @@ function Row({ row, onRowChange }) {
               >
                 {fileName}
               </Typography>
-             
 
               {/**Memory section*/}
               <Box xs={{ margin: 1 }}>
@@ -177,7 +174,11 @@ function Row({ row, onRowChange }) {
                       name="memoryType"
                       value={memoryType}
                       onChange={(e) =>
-                        handleRowChange(e.target.name, e.target.value.replace(/\s/g, '').toUpperCase(), e.target.type)
+                        handleRowChange(
+                          e.target.name,
+                          e.target.value.replace(/\s/g, '').toUpperCase(),
+                          e.target.type
+                        )
                       }
                       label="Memory Type"
                     >
@@ -201,7 +202,11 @@ function Row({ row, onRowChange }) {
                       value={memoryBrand}
                       name="memoryBrand"
                       onChange={(e) =>
-                        handleRowChange(e.target.name, e.target.value, e.target.type)
+                        handleRowChange(
+                          e.target.name,
+                          e.target.value,
+                          e.target.type
+                        )
                       }
                       label="Brand"
                     >
@@ -223,7 +228,11 @@ function Row({ row, onRowChange }) {
                       value={memoryModel}
                       name="memoryModel"
                       onChange={(e) =>
-                        handleRowChange(e.target.name, e.target.value, e.target.type)
+                        handleRowChange(
+                          e.target.name,
+                          e.target.value,
+                          e.target.type
+                        )
                       }
                     >
                       <option selected value="">
@@ -252,7 +261,11 @@ function Row({ row, onRowChange }) {
                       className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                       placeholder="Memory Lable"
                       onChange={(e) =>
-                        handleRowChange(e.target.name, e.target.value, e.target.type)
+                        handleRowChange(
+                          e.target.name,
+                          e.target.value,
+                          e.target.type
+                        )
                       }
                       required
                     />
@@ -266,7 +279,6 @@ function Row({ row, onRowChange }) {
                   </div>
                 </div>
               </Box>
-
 
               {/**Second section*/}
               <Table size="small" aria-label="purchases">
@@ -397,8 +409,6 @@ function Row({ row, onRowChange }) {
                     </TableCell>
                   </TableRow>
                 </TableBody>
-
-                
               </Table>
             </Box>
           </Collapse>
