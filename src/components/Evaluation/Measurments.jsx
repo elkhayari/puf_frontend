@@ -108,9 +108,10 @@ export default function Measurments({ updateIsStepWarning }) {
               fileName,
               iteration,
               voltage,
-              temperature
+              temperature,
+              testId
             }) => ({
-              id: `INT_${id}`,
+              id: `INT_${id}_${testId}`,
               testType,
               initialValue,
               memoryType,
@@ -125,7 +126,8 @@ export default function Measurments({ updateIsStepWarning }) {
               iteration,
               voltage,
               temperature,
-              uploaded: false
+              uploaded: false, 
+              testId
             })
           );
         }

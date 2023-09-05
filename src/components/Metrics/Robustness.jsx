@@ -20,6 +20,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Alert from '@mui/material/Alert';
+import MemoryIcon from '@mui/icons-material/Memory';
 
 function ccyFormat(num) {
   return `${num.toFixed(4)}`;
@@ -78,7 +79,7 @@ const Robustness = (props) => {
                     <CardHeader
                       avatar={
                         <Avatar sx={{ bgcolor: red[500] }} aria-label="chip">
-                          {1}
+                          <MemoryIcon />
                         </Avatar>
                       }
                       action={
@@ -110,7 +111,7 @@ const Robustness = (props) => {
                         id="tableTitle"
                         component="div"
                       >
-                        Intra-measurements of Experimental Results
+                        Intra-HD of Experimental Results
                       </Typography>
                       <ExpandMore
                         expand={expanded}
@@ -153,7 +154,7 @@ const Robustness = (props) => {
                               <StyledTableRow>
                                 {addressesGroup.challengeKeys.map((c, i) => (
                                   <StyledTableCell key={i} align="center">
-                                    {c.challengeName}
+                                    {c}
                                   </StyledTableCell>
                                 ))}
                               </StyledTableRow>
@@ -200,13 +201,13 @@ const Robustness = (props) => {
                                               {meas.Robustness ? (
                                                 <>
                                                   <StyledTableCell align="left">
-                                                    {meas.hammingDistance.min}
+                                                    {ccyFormat(meas.hammingDistance.min) }
                                                   </StyledTableCell>
                                                   <StyledTableCell align="left">
-                                                    {meas.hammingDistance.avg}
+                                                    {ccyFormat(meas.hammingDistance.avg) }
                                                   </StyledTableCell>
                                                   <StyledTableCell align="left">
-                                                    {meas.hammingDistance.max}
+                                                    {ccyFormat(meas.hammingDistance.max) }
                                                   </StyledTableCell>
                                                 </>
                                               ) : (

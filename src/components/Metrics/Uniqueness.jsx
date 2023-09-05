@@ -229,8 +229,9 @@ const NestedChallengeTablePanel = ({ group }) => {
           <Typography
             sx={{ display: 'flex', flexWrap: 'wrap', marginTop: '10px' }}
           >
-            Select Challenge
+            Select Challenge (Data Setup Time)
           </Typography>
+          
           {group.challenges.length === 0 ? (
             <NotEnoughDataAlert />
           ) : (
@@ -261,6 +262,7 @@ const NestedChallengeTablePanel = ({ group }) => {
           )
         )}
       </SwipeableViews>
+      
     </>
   );
 };

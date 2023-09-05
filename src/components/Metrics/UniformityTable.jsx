@@ -24,6 +24,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import MemoryIcon from '@mui/icons-material/Memory';
 
 import { Checkbox, Button } from '@mui/material';
 
@@ -74,41 +76,67 @@ const StyledCard = styled(Card)(({ theme }) => ({
 
 function GroupRow({ group, evaluation_id, setExistingHeatmapIds }) {
   //const [heatmap, setHeatmap] = useState(null);
-  console.log(group)
+  console.log(group);
   const [heatmaps, setHeatmaps] = useState([]);
   const measurement_ids = group.challenge_measuremenst.map(
     (measurement) => measurement.id
   );
-  console.log(measurement_ids)
+  console.log(measurement_ids);
 
   useEffect(() => {
     const fetchExistingHeatmapIds = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/brokerApi/existing-heatmap-ids/?evaluation_id=${evaluation_id}&measurement_ids=${JSON.stringify(measurement_ids)}`)
+        const response = await fetch(
+          `http://127.0.0.1:8000/brokerApi/existing-heatmap-ids/?evaluation_id=${evaluation_id}&measurement_ids=${JSON.stringify(
+            measurement_ids
+          )}`
+        );
         const data = await response.json();
-        console.log('data from existing heatmaps:::')
-        console.log(data)
+        console.log('data from existing heatmaps:::');
+        console.log(data);
         // Append the fetched data to the existing heatmaps
         setHeatmaps(data);
         setExistingHeatmapIds(measurement_ids);
       } catch (error) {
-          console.error("Error fetching existing heatmap IDs:", error);
+        console.error('Error fetching existing heatmap IDs:', error);
       }
-  };
+    };
 
-  fetchExistingHeatmapIds()
+    fetchExistingHeatmapIds();
   }, []);
 
   return (
-    <div>
-    {heatmaps && heatmaps.map(heatmap => (
-      <div key={heatmap.id}>
-        <p>ID: {heatmap.id}</p>
-        <img src={`data:image/png;base64,${heatmap.heatmap_binary_image}`} alt={`Heatmap ${heatmap.id}`} />
-      </div>
-    ))}
-  </div>
+    <Grid container spacing={2}>
+    {heatmaps &&
+      heatmaps.map((heatmap, index) => (
+        <Grid key={heatmap.id} item xs={12} sm={6}>
+          <Card variant="outlined" style={{marginBottom: '20px'}}>
+            <CardContent>
+              <Typography variant="h6">Measurment ID: {heatmap.measurement_ids}</Typography>
+              <img
+                src={`data:image/png;base64,${heatmap.heatmap_binary_image}`}
+                alt={`Heatmap ${heatmap.id}`}
+                style={{ width: '100%' }}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+      ))}
+  </Grid>
+    
   );
+  {/* <div>
+      {heatmaps &&
+        heatmaps.map((heatmap) => (
+          <div key={heatmap.id}>
+            <p>ID: {heatmap.id}</p>
+            <img
+              src={`data:image/png;base64,${heatmap.heatmap_binary_image}`}
+              alt={`Heatmap ${heatmap.id}`}
+            />
+          </div>
+        ))}
+    </div> */}
 }
 
 export default function UniformityTable(props) {
@@ -126,9 +154,26 @@ export default function UniformityTable(props) {
   const [heatmapVisible, setHeatmapVisible] = useState(false);
   const [existingHeatmapIds, setExistingHeatmapIds] = useState([]);
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  let ws;
 
+  useEffect(() => {
+    ws = new WebSocket('ws://127.0.0.1:8089/ws/some_path/');
+    console.log('in websocket uniformitytable')
 
+    ws.onmessage = (event) => {
+      const messageData = JSON.parse(event.data);
+      console.log(messageData)
+      if (messageData.message === 'Heatmap generation complete') {
+        setIsLoading(false);
+      }
+      // Handle other messages as needed
+    };
 
+    return () => {
+      ws.close();
+    };
+  }, []);
 
   //const isSelected = (id) => selected.indexOf(id) !== -1;
   const isSelected = (group) => {
@@ -247,7 +292,7 @@ export default function UniformityTable(props) {
 
     const requestData = {
       data: groupedFilteredData,
-      evaluation_id : evaluation_id
+      evaluation_id: evaluation_id
     };
     console.log('groupedFilteredData');
     console.log(groupedFilteredData);
@@ -265,53 +310,7 @@ export default function UniformityTable(props) {
     const data = await response.json();
 
     console.log(data);
-
-    // Call the Django API endpoint to initiate heatmap generation
-    /*  fetch('/api/generate_heatmap/', {
-    method: 'POST',
-    body: JSON.stringify(requestPayload),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      // Display heatmap to user or any other necessary actions
-    }
-  }); */
   };
-
-  const fetchHeatmapForMeasurement = async (group) => {
-    console.log(group)
-    
-   /*  try {
-        const response = await fetch(`http://127.0.0.1:8000/api/heatmaps/?measurement_id=${measurementId}`);
-        const data = await response.json();
-        // Merge the new heatmap data with the existing ones
-        setHeatmaps(prevHeatmaps => [...prevHeatmaps, ...data]);
-    } catch (error) {
-        console.error("Error fetching heatmap for measurement:", error);
-    } */
-};
-
-  const fetchHeatmaps = async () => {
-    console.log('fetch heatmaps')
-   /*  try {
-        const response = await fetch(`http://127.0.0.1:8000/api/heatmaps/?evaluation_id=${evaluation_id}&measurement_ids=${JSON.stringify(selected)}`);
-        const data = await response.json();
-        setHeatmaps(data);
-    } catch (error) {
-        console.error("Error fetching heatmaps:", error);
-    } */
-};
-
-  const toggleHeatmapSection = () => {
-    if (!heatmapVisible) {
-        fetchHeatmaps();
-    }
-    setHeatmapVisible(!heatmapVisible);
-};
 
 
   return (
@@ -319,7 +318,8 @@ export default function UniformityTable(props) {
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="chip">
-            {memoryGroup.memoryKey[0]}
+            <MemoryIcon />
+
           </Avatar>
         }
         action={
@@ -348,7 +348,6 @@ export default function UniformityTable(props) {
           component="div"
         >
           Fractional Hamming Weight of Experimental Results
-          {selected}
         </Typography>
         <ExpandMore
           expand={expanded}
@@ -366,12 +365,10 @@ export default function UniformityTable(props) {
             <Table sx={{ width: '100%' }} aria-label="customized table">
               <TableHead>
                 <StyledTableRow>
-                <StyledTableCell rowSpan={2} />
+                  <StyledTableCell rowSpan={2}>
+                  <Avatar alt="Icon" src="/home/elkhay01/Desktop/Thesis/code/puf_frontend/public/icons8-heat-map-32.png" />
+                    </StyledTableCell>
                   <StyledTableCell align="center" rowSpan={2}>
-                    {console.log(addressesGroup)
-                     
-                    }
-                    
                     <StyledCheckbox
                       indeterminate={
                         selected.length > 0 &&
@@ -392,6 +389,9 @@ export default function UniformityTable(props) {
                   </StyledTableCell>
                   <StyledTableCell align="left" rowSpan={2}>
                     ID
+                  </StyledTableCell>
+                  <StyledTableCell align="left" rowSpan={2}>
+                    Voltage
                   </StyledTableCell>
                   <StyledTableCell align="left" rowSpan={2}>
                     Chip
@@ -429,98 +429,111 @@ export default function UniformityTable(props) {
                     <>
                       {challengeGroup.challenge_measuremenst.map((meas, i) => (
                         <>
-                        <TableRow key={i}>
-                          {i === 0 &&
-                            challengeGroup.challenge.map((c, j) => (
-                              <>
-                                <TableCell>
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
-                                <StyledTableCell
-                                  align="center"
-                                  rowSpan={
-                                    challengeGroup.challenge_measuremenst.length
-                                  }
-                                  padding="checkbox"
-                                >
-                                  <Checkbox
-                                    checked={isSelected(challengeGroup)}
-                                    onChange={(event) =>
-                                      handleSelectAllGroup(
-                                        event,
-                                        challengeGroup
-                                      )
+                          <TableRow key={i}>
+                            {i === 0  &&
+                              challengeGroup.challenge.map((c, j) => (
+                                <>
+                                  <StyledTableCell
+                                    rowSpan={
+                                      challengeGroup.challenge_measuremenst
+                                        .length
                                     }
-                                  />
-                                </StyledTableCell>
-                                
-                                <TableCell
-                                  align="center"
-                                  rowSpan={
-                                    challengeGroup.challenge_measuremenst.length
-                                  }
-                                >
-                                  {c.challengeValue}
-                                </TableCell>
-                              </>
-                            ))}{' '}
-                          {/* DISPLAY chalenge values */}
-                         
-                          {
-                            // Inside the component that renders TableRow
-/* useEffect(() => {
-  fetchHeatmapForMeasurement(challengeGroup)
-}, [challengeGroup]) */
+                                  >
+                                    <IconButton
+                                      aria-label="expand row"
+                                      size="small"
+                                      onClick={() => setOpen(!open)}
+                                    >
+                                      {open ? (
+                                        <KeyboardArrowUpIcon />
+                                      ) : (
+                                        <KeyboardArrowDownIcon />
+                                      )}
+                                    </IconButton>
+                                  </StyledTableCell>
 
-                          }
-                          <StyledTableCell align="left">
-                            {meas.id}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {meas.memoryLabel}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {meas.iteration}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {meas.zeros}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {meas.ones}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {meas.gaps}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {`${ccyFormat(meas.hammingWeight)}`}
-                          </StyledTableCell>
-                        </TableRow>
-                        <TableRow>
-                        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
+                                  <StyledTableCell
+                                    align="center"
+                                    rowSpan={
+                                      challengeGroup.challenge_measuremenst
+                                        .length
+                                    }
+                                    padding="checkbox"
+                                  >
+                                    <Checkbox
+                                      checked={isSelected(challengeGroup)}
+                                      onChange={(event) =>
+                                        handleSelectAllGroup(
+                                          event,
+                                          challengeGroup
+                                        )
+                                      }
+                                    />
+                                  </StyledTableCell>
+
+                                  <TableCell
+                                    align="center"
+                                    rowSpan={
+                                      challengeGroup.challenge_measuremenst
+                                        .length
+                                    }
+                                  >
+                                    {c.challengeValue}
+                                  </TableCell>
+                                </>
+                              ))}{' '}
+                            {/* DISPLAY chalenge values */}
+                          
+                            <StyledTableCell align="left">
+                              {meas.id}
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              {meas.voltage}
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                               {meas.memoryLabel}
+                             
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              {meas.iteration}
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              {meas.zeros}
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              {meas.ones}
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              {meas.gaps}
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              {`${ccyFormat(meas.hammingWeight)}`}
+                            </StyledTableCell>
+                          </TableRow>
+                        </>
+                      ))}
+                      <TableRow>
+                        <TableCell
+                          style={{ paddingBottom: 0, paddingTop: 0 }}
+                          colSpan={11}
+                        >
                           <Collapse in={open} timeout="auto" unmountOnExit>
                             <Box sx={{ margin: 1 }}>
                               <Typography
                                 className="mr-2 text-gray-900 font-semibold mb-1"
                                 gutterBottom
                               >
-                                Characteristics
+                                Heatmaps
                               </Typography>
-                                </Box>
-                                <GroupRow group={challengeGroup} evaluation_id={evaluation_id} setExistingHeatmapIds= {setExistingHeatmapIds} />
-
-                                </Collapse>
-                                </TableCell>
-                                </TableRow>
-                        </>
-                        
-                        
-                      ))}
+                            </Box>
+                            <GroupRow
+                              group={challengeGroup}
+                              evaluation_id={evaluation_id}
+                              setExistingHeatmapIds={setExistingHeatmapIds}
+                            />
+                          </Collapse>
+                        </TableCell>
+                      </TableRow>
                     </>
                   );
                 })}
@@ -536,22 +549,9 @@ export default function UniformityTable(props) {
           Generate Heatmap
         </Button>
       </Collapse>
-      <Button onClick={toggleHeatmapSection}>
-    {heatmapVisible ? "Hide Heatmaps" : "Show Heatmaps"}
-</Button>
+   
 
-<Collapse in={heatmapVisible}>
-    <CardContent>
-       {/* { heatmaps && heatmaps.map((heatmap, index) => (
-          <div key={index}>
-            {heatmap}
-                <img src={`data:image/png;base64,${heatmap.heatmap_binary_image}`} alt={`Heatmap ${index + 1}`} /> 
-            </div>
-        ))}  */}
-    </CardContent>
-</Collapse>
-
-      
+     
     </StyledCard>
   );
 }

@@ -23,7 +23,8 @@ const AddTest = ({ user }) => {
     temperatureChecked: false,
     voltageChecked: false,
     voltage: 12,
-    dataSetupTime: '15'
+    dataSetupTime: '15',
+    iterations: 1,
   });
 
   const [errors, setErrors] = React.useState({
@@ -34,7 +35,8 @@ const AddTest = ({ user }) => {
     stopAddress: '',
     temperature: '',
     voltage: '',
-    dataSetupTime: ''
+    dataSetupTime: '',
+    iterations: ''
   });
 
   const validate = () => {
@@ -80,16 +82,6 @@ const AddTest = ({ user }) => {
     }
   };
 
-  // const handleMemoryLabelChange = (name) => (event) => {
-  //   console.log(
-  //     '🚀 ~ file: AddTest.jsx:83 ~ memoryLabel ~ event:',
-  //     name,
-  //     event.target.value
-  //   );
-  //   let value = event.target.value.replace(/\s/g, '').toUpperCase();
-  //   setValues({ ...values, [name]: value });
-  //   console.log('🚀 ~ file: AddTest.jsx:83 ~ memoryLabel ~ event:', value);
-  // };
 
   const handleChange1 = (name) => (event) => {
     setValues({ ...values, [name]: event.target.checked });
@@ -129,13 +121,6 @@ const AddTest = ({ user }) => {
     return str.includes('latency');
   }
 
-  // const renderOptions = (list) => {
-  //   return list.map((option) => (
-  //     <option key={option} value={option}>
-  //       {option}
-  //     </option>
-  //   ));
-  // };
 
   return (
     <div className="m-2 md:m-10 mt-10 p-2 md:p-10 rounded-3xl">
@@ -288,8 +273,8 @@ const AddTest = ({ user }) => {
               )}
             </div>
 
-            <div className="grid md:grid-cols-5 md:gap-6 my-4 mt-8">
-              {hasLatencyWord(values.testType) && (
+            <div className="grid md:grid-cols-3 md:gap-6 my-4 mt-8">
+             
                 <TextField
                   id="outlined-helperText_2"
                   label="Data Setup Time"
@@ -298,8 +283,22 @@ const AddTest = ({ user }) => {
                   placeholder="Data setup time"
                   onChange={handleChange('dataSetupTime')}
                 />
-              )}
+            
             </div>
+
+            <div className="grid md:grid-cols-3 md:gap-6 my-4 mt-8">
+              
+                <TextField
+                  id="outlined-helperText_3"
+                  label="Number of Iterations"
+                  helperText=""
+                  value={values.iterations}
+                  placeholder="Iterations"
+                  onChange={handleChange('iterations')}
+                />
+              
+            </div>
+
 
             <button
               type="submit"

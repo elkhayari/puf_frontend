@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
-
+import   UniquenessHistogram   from './UniquenessHistogam';
 function ccyFormat(num) {
   return `${num.toFixed(4)}`;
 }
@@ -24,7 +24,7 @@ const InterHammingDistanceTable = (props) => {
       <br />
 
       <Typography
-        sx={{ flex: '1 1 100%' }}
+        sx={{ flex: '1 1 90%' }}
         variant="h6"
         id="tableTitle"
         component="div"
@@ -33,7 +33,7 @@ const InterHammingDistanceTable = (props) => {
       </Typography>
 
       <TableContainer component={Paper}>
-        <Table sx={{ width: '90%' }} aria-label="spanning table">
+        <Table sx={{ width: '50%' }} aria-label="spanning table">
           <TableHead>
             <TableRow>
               <TableCell align="center" colSpan={2}>
@@ -54,10 +54,10 @@ const InterHammingDistanceTable = (props) => {
                   <TableCell>{row.chip1}</TableCell>
                   <TableCell align="right">{row.chip2}</TableCell>
                   <TableCell align="right">{row.iterationChip1}</TableCell>
-                  <TableCell align="right">{row.iterationChip2}</TableCell>
+                  <TableCell align="center">{row.iterationChip2}</TableCell>
                   <TableCell align="right">{`${ccyFormat(
                     row.hammingDistance
-                  )} %`}</TableCell>
+                  )}`}</TableCell>
                 </TableRow>
               ))
             )}
@@ -73,25 +73,26 @@ const InterHammingDistanceTable = (props) => {
                   <TableCell>Min</TableCell>
                   <TableCell align="right">{`${ccyFormat(
                     group.min_inter_hamming_distances
-                  )} %`}</TableCell>
+                  )}`}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Max</TableCell>
                   <TableCell align="right">{`${ccyFormat(
                     group.max_inter_hamming_distances
-                  )} %`}</TableCell>
+                  )} `}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Avg</TableCell>
                   <TableCell align="right">{`${ccyFormat(
                     group.avg_inter_hamming_distances
-                  )} %`}</TableCell>
+                  )} `}</TableCell>
                 </TableRow>
               </>
             )}
           </TableBody>
         </Table>
       </TableContainer>
+      {/* <UniquenessHistogram group={group}/>  */}
     </>
   );
 };
