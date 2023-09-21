@@ -24,7 +24,7 @@ const AddTest = ({ user }) => {
     voltageChecked: false,
     voltage: 12,
     dataSetupTime: '15',
-    iterations: 1,
+    iterations: 1
   });
 
   const [errors, setErrors] = React.useState({
@@ -82,7 +82,6 @@ const AddTest = ({ user }) => {
     }
   };
 
-
   const handleChange1 = (name) => (event) => {
     setValues({ ...values, [name]: event.target.checked });
   };
@@ -97,6 +96,8 @@ const AddTest = ({ user }) => {
 
       const data = values;
       console.log(data);
+      const VM_IP_ADDRESS = window.location.hostname;
+      
       const requestOptions = {
         method: 'POST',
         headers: {
@@ -105,7 +106,7 @@ const AddTest = ({ user }) => {
         },
         body: JSON.stringify(data)
       };
-      fetch('http://127.0.0.1:8000/testsApi/tests/', requestOptions).then(
+      fetch(`http://${VM_IP_ADDRESS}:8000/api-endpoint/`, requestOptions).then(
         (data) => {
           console.log(data); // JSON data parsed by `data.json()` call
           navigate('/tests');
@@ -120,7 +121,6 @@ const AddTest = ({ user }) => {
   function hasLatencyWord(str) {
     return str.includes('latency');
   }
-
 
   return (
     <div className="m-2 md:m-10 mt-10 p-2 md:p-10 rounded-3xl">
@@ -274,31 +274,26 @@ const AddTest = ({ user }) => {
             </div>
 
             <div className="grid md:grid-cols-3 md:gap-6 my-4 mt-8">
-             
-                <TextField
-                  id="outlined-helperText_2"
-                  label="Data Setup Time"
-                  helperText=""
-                  value={values.dataSetupTime}
-                  placeholder="Data setup time"
-                  onChange={handleChange('dataSetupTime')}
-                />
-            
+              <TextField
+                id="outlined-helperText_2"
+                label="Data Setup Time"
+                helperText=""
+                value={values.dataSetupTime}
+                placeholder="Data setup time"
+                onChange={handleChange('dataSetupTime')}
+              />
             </div>
 
             <div className="grid md:grid-cols-3 md:gap-6 my-4 mt-8">
-              
-                <TextField
-                  id="outlined-helperText_3"
-                  label="Number of Iterations"
-                  helperText=""
-                  value={values.iterations}
-                  placeholder="Iterations"
-                  onChange={handleChange('iterations')}
-                />
-              
+              <TextField
+                id="outlined-helperText_3"
+                label="Number of Iterations"
+                helperText=""
+                value={values.iterations}
+                placeholder="Iterations"
+                onChange={handleChange('iterations')}
+              />
             </div>
-
 
             <button
               type="submit"

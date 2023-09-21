@@ -53,11 +53,6 @@ export default function Metrics() {
   const evaluationData = location.state?.evaluationData || {};
   const evaluationResult = JSON.parse(location.state?.evaluationResult || {});
 
-  console.log(evaluationResult);
-  console.log(evaluationData);
-
-  console.log(typeof evaluationResult);
-
   const uniformityData = evaluationResult?.uniformity || [];
   console.log(
     '🚀 ~ file: Metrics.jsx:58 ~ Metrics ~ uniformityData:',
@@ -158,10 +153,16 @@ export default function Metrics() {
             />
           </TabPanel>
           <TabPanel value={value} index={1} dir={theme.direction}>
-            <Robustness data={robustnessData} />
+            <Robustness
+              evaluation_id={evaluationData.id}
+              data={robustnessData}
+            />
           </TabPanel>
           <TabPanel value={value} index={2} dir={theme.direction}>
-            <Uniqueness data={uniquenessData} />
+            <Uniqueness
+              evaluation_id={evaluationData.id}
+              data={uniquenessData}
+            />
           </TabPanel>
         </SwipeableViews>
       </Box>

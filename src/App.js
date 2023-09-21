@@ -8,8 +8,14 @@ import { useStateContext } from './contexts/ContextProvider';
 import './App.css';
 
 function App() {
-  const { setSocket, socket, setIsSocketOpen, isSocketOpen } =
-    useStateContext();
+  const {
+    setSocket,
+    socket,
+    setIsSocketOpen,
+    isSocketOpen,
+    heatmapSocket,
+    setHeatmapSocket
+  } = useStateContext();
 
   useEffect(() => {
     console.log('UseEffect App.js');
@@ -18,11 +24,29 @@ function App() {
 
     const webSocket = new WebSocket('ws://127.0.0.1:8089/ws/devices/');
     setSocket(webSocket);
-    console.log('WebSocket connection established');
+    console.log('WebSocket Connection Established');
 
     return () => {
       console.log('close it');
       socket.close();
+    };
+  }, []); // Empty dependency array ensures the effect runs only once
+
+  useEffect(() => {
+    console.log('UseEffect heatmapsocket App.js');
+    const storedHeatmapSocketOpen = sessionStorage.getItem('heatmapSocketOpen');
+    console.log(storedHeatmapSocketOpen);
+
+    const heatmapWebSocket = new WebSocket('ws://127.0.0.1:8089/ws/heatmap/');
+    /* heatmapWebSocket.onopen = () => {
+      console.log('Heatmap WebSocket Client Connected');
+    }; */
+    setHeatmapSocket(heatmapWebSocket);
+    console.log('HeatmapWebSocket Connection Established');
+
+    return () => {
+      console.log('close it');
+      heatmapWebSocket.close();
     };
   }, []); // Empty dependency array ensures the effect runs only once
 

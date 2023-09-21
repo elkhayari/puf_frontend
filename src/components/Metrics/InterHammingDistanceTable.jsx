@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
-import   UniquenessHistogram   from './UniquenessHistogam';
+import UniquenessHistogram from './UniquenessHistogam';
 function ccyFormat(num) {
   return `${num.toFixed(4)}`;
 }

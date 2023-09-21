@@ -231,7 +231,7 @@ const NestedChallengeTablePanel = ({ group }) => {
           >
             Select Challenge (Data Setup Time)
           </Typography>
-          
+
           {group.challenges.length === 0 ? (
             <NotEnoughDataAlert />
           ) : (
@@ -262,7 +262,6 @@ const NestedChallengeTablePanel = ({ group }) => {
           )
         )}
       </SwipeableViews>
-      
     </>
   );
 };

@@ -29,6 +29,9 @@ import MemoryIcon from '@mui/icons-material/Memory';
 
 import { Checkbox, Button } from '@mui/material';
 
+import Heatmap from './Heatmap';
+import { useStateContext } from '../../contexts/ContextProvider';
+
 function ccyFormat(num) {
   return `${num.toFixed(4)}`;
 }
@@ -107,36 +110,25 @@ function GroupRow({ group, evaluation_id, setExistingHeatmapIds }) {
 
   return (
     <Grid container spacing={2}>
-    {heatmaps &&
-      heatmaps.map((heatmap, index) => (
-        <Grid key={heatmap.id} item xs={12} sm={6}>
-          <Card variant="outlined" style={{marginBottom: '20px'}}>
-            <CardContent>
-              <Typography variant="h6">Measurment ID: {heatmap.measurement_ids}</Typography>
-              <img
-                src={`data:image/png;base64,${heatmap.heatmap_binary_image}`}
-                alt={`Heatmap ${heatmap.id}`}
-                style={{ width: '100%' }}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-      ))}
-  </Grid>
-    
-  );
-  {/* <div>
       {heatmaps &&
-        heatmaps.map((heatmap) => (
-          <div key={heatmap.id}>
-            <p>ID: {heatmap.id}</p>
-            <img
-              src={`data:image/png;base64,${heatmap.heatmap_binary_image}`}
-              alt={`Heatmap ${heatmap.id}`}
-            />
-          </div>
+        heatmaps.map((heatmap, index) => (
+          <Grid key={heatmap.id} item xs={12} sm={6}>
+            <Card variant="outlined" style={{ marginBottom: '20px' }}>
+              <CardContent>
+                <Typography variant="h6">
+                  Measurment ID: {heatmap.measurement_ids}
+                </Typography>
+                <img
+                  src={`data:image/png;base64,${heatmap.heatmap_binary_image}`}
+                  alt={`Heatmap ${heatmap.id}`}
+                  style={{ width: '100%' }}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
         ))}
-    </div> */}
+    </Grid>
+  );
 }
 
 export default function UniformityTable(props) {
@@ -149,21 +141,47 @@ export default function UniformityTable(props) {
     evaluation_id
   } = props;
 
+  const { heatmapSocket } = useStateContext();
+
+  console.log('addressesGroup: ', addressesGroup);
+
   const [expanded, setExpanded] = useState(true);
   const [selected, setSelected] = useState([]);
   const [heatmapVisible, setHeatmapVisible] = useState(false);
   const [existingHeatmapIds, setExistingHeatmapIds] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(null);
+  const [openGroups, setOpenGroups] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
-  let ws;
+  const [disabledIds, setDisabledIds] = useState([]);
 
   useEffect(() => {
-    ws = new WebSocket('ws://127.0.0.1:8089/ws/some_path/');
-    console.log('in websocket uniformitytable')
+    async function fetchDisabledIds(measId) {
+      const response = await fetch(
+        `http://127.0.0.1:8000/brokerApi/check-heatmap-ids/?meas_id=${measId}`
+      );
+      const data = await response.json();
+      if (data.exists) {
+        console.log('exists', data.exists);
+        setDisabledIds((prevIds) => [...prevIds, measId]);
+      }
+    }
 
-    ws.onmessage = (event) => {
+    // Extracting all measurement ids from the provided object
+    addressesGroup.challenges.forEach((challengeObj) => {
+      challengeObj.challenge_measuremenst.forEach((meas) => {
+        console.log('check ', meas.id);
+        fetchDisabledIds(meas.id);
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log(heatmapSocket);
+
+    heatmapSocket.onmessage = (event) => {
       const messageData = JSON.parse(event.data);
-      console.log(messageData)
+      console.log(messageData);
       if (messageData.message === 'Heatmap generation complete') {
         setIsLoading(false);
       }
@@ -171,7 +189,7 @@ export default function UniformityTable(props) {
     };
 
     return () => {
-      ws.close();
+      heatmapSocket.close();
     };
   }, []);
 
@@ -189,6 +207,10 @@ export default function UniformityTable(props) {
     );
 
     return groupIndex !== -1;
+  };
+
+  const isMeasSelected = (measurementId) => {
+    return selected.includes(measurementId);
   };
 
   const handleSelectAllClick = (event) => {
@@ -277,10 +299,21 @@ export default function UniformityTable(props) {
   }));
 
   const handleGenerateHeatmap = async (addressesGroup) => {
+    console.log('handleGenerateHeatmap');
     console.log(selected);
     console.log(addressesGroup);
 
-    const groupedFilteredData = selected.map((selectedGroup) => {
+    const groupedFilteredData = selected.map((selectedId) => {
+      return addressesGroup.challenges.flatMap((challenge) =>
+        challenge.challenge_measuremenst.filter(
+          (measurement) => measurement.id === selectedId
+        )
+      );
+    });
+
+    console.log(groupedFilteredData);
+
+    /*  const groupedFilteredData = selected.map((selectedGroup) => {
       return selectedGroup.flatMap((selectedId) => {
         return addressesGroup.challenges.flatMap((challenge) =>
           challenge.challenge_measuremenst.filter(
@@ -288,7 +321,7 @@ export default function UniformityTable(props) {
           )
         );
       });
-    });
+    }); */
 
     const requestData = {
       data: groupedFilteredData,
@@ -310,8 +343,37 @@ export default function UniformityTable(props) {
     const data = await response.json();
 
     console.log(data);
+    // After generating the heatmaps, check if the meas.id values exist in the Heatmap table
+    checkHeatmapExistence(selected);
   };
 
+  const checkHeatmapExistence = async (selectedIds) => {
+    console.log(selectedIds);
+    for (let measId of selectedIds) {
+      const response = await fetch(
+        `http://127.0.0.1:8000/brokerApi/check-heatmap-ids/?meas_id=${measId}`
+      );
+      const data = await response.json();
+      if (data.exists) {
+        setDisabledIds((prevIds) => {
+          console.log('data.exists');
+          console.log(data.exists);
+          if (!prevIds.includes(measId)) {
+            return [...prevIds, measId];
+          }
+          return prevIds;
+        });
+      }
+    }
+  };
+
+  const handleOpen = (uniqueGroupId) => {
+    if (openGroups.includes(uniqueGroupId)) {
+      setOpenGroups((prev) => prev.filter((id) => id !== uniqueGroupId));
+    } else {
+      setOpenGroups((prev) => [...prev, uniqueGroupId]);
+    }
+  };
 
   return (
     <StyledCard sx={{ width: '100%' }}>
@@ -319,7 +381,6 @@ export default function UniformityTable(props) {
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="chip">
             <MemoryIcon />
-
           </Avatar>
         }
         action={
@@ -366,9 +427,12 @@ export default function UniformityTable(props) {
               <TableHead>
                 <StyledTableRow>
                   <StyledTableCell rowSpan={2}>
-                  <Avatar alt="Icon" src="/home/elkhay01/Desktop/Thesis/code/puf_frontend/public/icons8-heat-map-32.png" />
-                    </StyledTableCell>
-                  <StyledTableCell align="center" rowSpan={2}>
+                    <Avatar
+                      alt="Icon"
+                      src="/home/elkhay01/Desktop/Thesis/code/puf_frontend/public/icons8-heat-map-32.png"
+                    />
+                  </StyledTableCell>
+                  {/* <StyledTableCell align="center" rowSpan={2}>
                     <StyledCheckbox
                       indeterminate={
                         selected.length > 0 &&
@@ -380,7 +444,7 @@ export default function UniformityTable(props) {
                       }
                       onChange={handleSelectAllClick}
                     />{' '}
-                  </StyledTableCell>
+                  </StyledTableCell> */}
                   <StyledTableCell
                     align="center"
                     colSpan={addressesGroup.challengeKeys.length}
@@ -411,7 +475,21 @@ export default function UniformityTable(props) {
                   <StyledTableCell align="left" rowSpan={2}>
                     Hamming Weight
                   </StyledTableCell>
+                  <StyledTableCell align="center" rowSpan={2}>
+                    <StyledCheckbox
+                      indeterminate={
+                        selected.length > 0 &&
+                        selected.length < totalMeasurements
+                      }
+                      checked={
+                        totalMeasurements > 0 &&
+                        selected.length === totalMeasurements
+                      }
+                      onChange={handleSelectAllClick}
+                    />{' '}
+                  </StyledTableCell>
                 </StyledTableRow>
+
                 <StyledTableRow>
                   {addressesGroup.challengeKeys.map((challenge, i) => (
                     <StyledTableCell key={i} align="center">
@@ -422,15 +500,17 @@ export default function UniformityTable(props) {
               </TableHead>
 
               <TableBody>
-                {addressesGroup.challenges.map((challengeGroup) => {
-                  console.log(challengeGroup);
+                {addressesGroup.challenges.map((challengeGroup, groupIndex) => {
+                  //console.log(challengeGroup);
+                  const uniqueGroupId = groupIndex; // Assuming challengeGroup has an 'id' property. If not, use groupIndex.
+                  //console.log(uniqueGroupId)
 
                   return (
                     <>
                       {challengeGroup.challenge_measuremenst.map((meas, i) => (
                         <>
                           <TableRow key={i}>
-                            {i === 0  &&
+                            {i === 0 &&
                               challengeGroup.challenge.map((c, j) => (
                                 <>
                                   <StyledTableCell
@@ -442,9 +522,9 @@ export default function UniformityTable(props) {
                                     <IconButton
                                       aria-label="expand row"
                                       size="small"
-                                      onClick={() => setOpen(!open)}
+                                      onClick={() => handleOpen(uniqueGroupId)}
                                     >
-                                      {open ? (
+                                      {openGroups.includes(uniqueGroupId) ? (
                                         <KeyboardArrowUpIcon />
                                       ) : (
                                         <KeyboardArrowDownIcon />
@@ -452,7 +532,7 @@ export default function UniformityTable(props) {
                                     </IconButton>
                                   </StyledTableCell>
 
-                                  <StyledTableCell
+                                  {/*  <StyledTableCell
                                     align="center"
                                     rowSpan={
                                       challengeGroup.challenge_measuremenst
@@ -469,7 +549,7 @@ export default function UniformityTable(props) {
                                         )
                                       }
                                     />
-                                  </StyledTableCell>
+                                  </StyledTableCell> */}
 
                                   <TableCell
                                     align="center"
@@ -483,7 +563,6 @@ export default function UniformityTable(props) {
                                 </>
                               ))}{' '}
                             {/* DISPLAY chalenge values */}
-                          
                             <StyledTableCell align="left">
                               {meas.id}
                             </StyledTableCell>
@@ -491,8 +570,7 @@ export default function UniformityTable(props) {
                               {meas.voltage}
                             </StyledTableCell>
                             <StyledTableCell align="left">
-                               {meas.memoryLabel}
-                             
+                              {meas.memoryLabel}
                             </StyledTableCell>
                             <StyledTableCell align="left">
                               {meas.iteration}
@@ -509,6 +587,15 @@ export default function UniformityTable(props) {
                             <StyledTableCell align="left">
                               {`${ccyFormat(meas.hammingWeight)}`}
                             </StyledTableCell>
+                            <StyledTableCell align="center" padding="checkbox">
+                              <Checkbox
+                                checked={isMeasSelected(meas.id)}
+                                onChange={(event) =>
+                                  handleCheckboxClick(event, meas.id)
+                                }
+                                disabled={disabledIds.includes(meas.id)}
+                              />
+                            </StyledTableCell>
                           </TableRow>
                         </>
                       ))}
@@ -517,7 +604,16 @@ export default function UniformityTable(props) {
                           style={{ paddingBottom: 0, paddingTop: 0 }}
                           colSpan={11}
                         >
-                          <Collapse in={open} timeout="auto" unmountOnExit>
+                          {/* <Heatmap
+                              group={challengeGroup}
+                              evaluation_id={evaluation_id}
+                              setExistingHeatmapIds={setExistingHeatmapIds}
+                            /> */}
+                          <Collapse
+                            in={openGroups.includes(uniqueGroupId)}
+                            timeout="auto"
+                            unmountOnExit
+                          >
                             <Box sx={{ margin: 1 }}>
                               <Typography
                                 className="mr-2 text-gray-900 font-semibold mb-1"
@@ -549,9 +645,6 @@ export default function UniformityTable(props) {
           Generate Heatmap
         </Button>
       </Collapse>
-   
-
-     
     </StyledCard>
   );
 }

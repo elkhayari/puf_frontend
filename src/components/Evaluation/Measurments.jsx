@@ -126,7 +126,7 @@ export default function Measurments({ updateIsStepWarning }) {
               iteration,
               voltage,
               temperature,
-              uploaded: false, 
+              uploaded: false,
               testId
             })
           );

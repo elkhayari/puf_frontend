@@ -14,6 +14,8 @@ export const ContextProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [isSocketOpen, setIsSocketOpen] = useState(false);
 
+  const [heatmapSocket, setHeatmapSocket] = useState(null);
+
   const [devices, setDevices] = useState([]);
   const [connectedDevices, setConnectedDevices] = useState([]);
 
@@ -58,7 +60,9 @@ export const ContextProvider = ({ children }) => {
         setIsClicked,
         handleClick,
         screenSize,
-        setScreenSize
+        setScreenSize,
+        heatmapSocket,
+        setHeatmapSocket
       }}
     >
       {children}
