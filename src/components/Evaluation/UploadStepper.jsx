@@ -31,6 +31,8 @@ import Typography from '@mui/material/Typography';
 
 import { CustomTable } from '../../components';
 
+import { BASE_URL } from '../../config';
+
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
     top: 22
@@ -251,7 +253,7 @@ const UploadStepper = () => {
         try {
           axios
             .post(
-              'http://127.0.0.1:8000/uploadMeasurmentsApi/uploadMeas/',
+              `${BASE_URL}/uploadMeasurmentsApi/uploadMeas/`,
               formData,
               {
                 headers: {

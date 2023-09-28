@@ -15,6 +15,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import { format } from 'date-fns'; // Import the format function from date-fns
 import { Header } from '../../components';
+import {BASE_URL} from '../../config'
 
 const useStyles = makeStyles((theme) => ({
   completed: {
@@ -41,7 +42,7 @@ const Results = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/brokerApi/tasks/');
+      const response = await fetch(`${BASE_URL}/brokerApi/tasks/`);
       const data = await response.json();
       setTasks(data.tasks);
     } catch (error) {
@@ -61,7 +62,7 @@ const Results = () => {
   }, []);
 
   const handleResultButtonClick = (task) => {
-    fetch(`http://127.0.0.1:8000/brokerApi/evaluation-result/${task.id}/`)
+    fetch(`${BASE_URL}/brokerApi/evaluation-result/${task.id}/`)
       .then((response) => response.json())
       .then((data) => {
         navigate(`/metrics`, {
@@ -93,7 +94,7 @@ const Results = () => {
     try {
       // Replace this with your API request
       const response = await fetch(
-        `http://127.0.0.1:8000/brokerApi/evaluation-result/${task.id}/`
+        `${BASE_URL}/brokerApi/evaluation-result/${task.id}/`
       );
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -119,7 +120,7 @@ const Results = () => {
     console.log('Delete clicked');
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/brokerApi/delete-result/${task.id}/`,
+        `${BASE_URL}/brokerApi/delete-result/${task.id}/`,
         {
           method: 'POST'
         }

@@ -31,7 +31,7 @@ import { Checkbox, Button } from '@mui/material';
 
 import Heatmap from './Heatmap';
 import { useStateContext } from '../../contexts/ContextProvider';
-
+import { BASE_URL } from '../../config';
 function ccyFormat(num) {
   return `${num.toFixed(4)}`;
 }
@@ -90,7 +90,7 @@ function GroupRow({ group, evaluation_id, setExistingHeatmapIds }) {
     const fetchExistingHeatmapIds = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/brokerApi/existing-heatmap-ids/?evaluation_id=${evaluation_id}&measurement_ids=${JSON.stringify(
+          `${BASE_URL}/brokerApi/existing-heatmap-ids/?evaluation_id=${evaluation_id}&measurement_ids=${JSON.stringify(
             measurement_ids
           )}`
         );
@@ -158,7 +158,7 @@ export default function UniformityTable(props) {
   useEffect(() => {
     async function fetchDisabledIds(measId) {
       const response = await fetch(
-        `http://127.0.0.1:8000/brokerApi/check-heatmap-ids/?meas_id=${measId}`
+        `${BASE_URL}/brokerApi/check-heatmap-ids/?meas_id=${measId}`
       );
       const data = await response.json();
       if (data.exists) {
@@ -331,7 +331,7 @@ export default function UniformityTable(props) {
     console.log(groupedFilteredData);
     //generate-heatmaps/
     const response = await fetch(
-      'http://127.0.0.1:8000/brokerApi/generate-heatmaps/',
+      `${BASE_URL}/brokerApi/generate-heatmaps/`,
       {
         method: 'POST',
         headers: {
@@ -351,7 +351,7 @@ export default function UniformityTable(props) {
     console.log(selectedIds);
     for (let measId of selectedIds) {
       const response = await fetch(
-        `http://127.0.0.1:8000/brokerApi/check-heatmap-ids/?meas_id=${measId}`
+        `${BASE_URL}/brokerApi/check-heatmap-ids/?meas_id=${measId}`
       );
       const data = await response.json();
       if (data.exists) {

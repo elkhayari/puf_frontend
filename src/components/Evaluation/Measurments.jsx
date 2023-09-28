@@ -4,7 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { CheckCircle, Error } from '@mui/icons-material';
 import UploadIcon from '@mui/icons-material/Upload';
 import FileDownloadOffIcon from '@mui/icons-material/FileDownloadOff';
-
+import {BASE_URL} from '../../config'
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
@@ -82,7 +82,7 @@ export default function Measurments({ updateIsStepWarning }) {
   }, []);
 
   let requestTests = async () => {
-    fetch('http://127.0.0.1:8000/testsApi/getEvaluationsTest/')
+    fetch(`${BASE_URL}/testsApi/getEvaluationsTest/`)
       .then((response) => response.json())
       .then((data) => {
         const completed_tests = Object.values(data).reduce(
@@ -142,7 +142,7 @@ export default function Measurments({ updateIsStepWarning }) {
   let requestUploadedMeasurments = async () => {
     try {
       let response = await fetch(
-        'http://127.0.0.1:8000/uploadMeasurmentsApi/uploadMeas'
+        `${BASE_URL}/uploadMeasurmentsApi/uploadMeas`
       );
       let data = await response.json();
       //console.log('Uploaded Measurments:', data);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { BASE_URL} from '../../config'
 import {
   FormControl,
   InputLabel,
@@ -106,7 +106,7 @@ const SelectChallengesForm = ({ isStepWarning }) => {
       robustnessChallenges: robustnessChallenges
     };
     const response = await fetch(
-      'http://127.0.0.1:8000/brokerApi/trigger-evaluation/',
+      `${BASE_URL}/brokerApi/trigger-evaluation/`,
       {
         method: 'POST',
         headers: {
