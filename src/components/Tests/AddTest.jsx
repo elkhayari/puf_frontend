@@ -5,6 +5,7 @@ import { Header } from '../index';
 import { testTypes } from '../../data/dummy';
 
 import TextField from '@mui/material/TextField';
+import {BASE_URL} from '../../../config'
 
 const AddTest = ({ user }) => {
   const [loading, setLoading] = useState(false);
@@ -96,7 +97,6 @@ const AddTest = ({ user }) => {
 
       const data = values;
       console.log(data);
-      const VM_IP_ADDRESS = window.location.hostname;
       
       const requestOptions = {
         method: 'POST',
@@ -106,7 +106,7 @@ const AddTest = ({ user }) => {
         },
         body: JSON.stringify(data)
       };
-      fetch(`http://${VM_IP_ADDRESS}:8000/testsApi/tests/`, requestOptions).then(
+      fetch(`${BASE_URL}/testsApi/tests/`, requestOptions).then(
         (data) => {
           console.log(data); // JSON data parsed by `data.json()` call
           navigate('/tests');
