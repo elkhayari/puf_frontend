@@ -106,7 +106,7 @@ const AddTest = ({ user }) => {
         },
         body: JSON.stringify(data)
       };
-      fetch(`http://${VM_IP_ADDRESS}:8000/api-endpoint/`, requestOptions).then(
+      fetch(`http://${VM_IP_ADDRESS}:8000/testsApi/tests/`, requestOptions).then(
         (data) => {
           console.log(data); // JSON data parsed by `data.json()` call
           navigate('/tests');
