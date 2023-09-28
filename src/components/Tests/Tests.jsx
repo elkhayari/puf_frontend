@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { TestLayout, Spinner } from '../index';
+import { BASE_URL } from '../../config'
 
 const Tests = () => {
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,7 @@ const Tests = () => {
   }, [testId]);
 
   let requestTests = async () => {
-    let response = await fetch('http://127.0.0.1:8000/testsApi/tests/');
+    let response = await fetch(`${BASE_URL}/testsApi/tests/`);
     let data = await response.json();
     console.log('DATA:', data);
     setReliabilityTests(data['reliabilityData']);
@@ -35,7 +36,7 @@ const Tests = () => {
   };
 
   let requestTestById = async (id) => {
-    let response = await fetch(`http://127.0.0.1:8000/testsApi/tests/${id}`);
+    let response = await fetch(`${BASE_URL}/testsApi/tests/${id}`);
     let data = await response.json();
 
     console.log('DATA:', data);

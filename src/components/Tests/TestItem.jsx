@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AiTwotoneDelete } from 'react-icons/ai';
 import { CiEdit } from 'react-icons/ci';
 import { Refresh } from '@mui/icons-material';
+import {BASE_URL} from '../../config'
 
 const TestItem = ({ test }) => {
   const [testHovered, setTestHovered] = useState(false);
@@ -26,7 +27,7 @@ const TestItem = ({ test }) => {
         // 'Content-Type': 'application/x-www-form-urlencoded',
       }
     };
-    fetch(`http://127.0.0.1:8000/api/tests/${id}`, requestOptions).then(
+    fetch(`${BASE_URL}api/tests/${id}`, requestOptions).then(
       (data) => {
         console.log(data); // JSON data parsed by `data.json()` call
         navigate('/tests');

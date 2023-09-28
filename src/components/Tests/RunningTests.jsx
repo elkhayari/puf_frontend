@@ -9,6 +9,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Header } from '../index';
 import './HourglassIcon.css';
+import {BASE_URL} from '../../config'
+
 const RunningTests = () => {
   const [runningTests, setRunningTests] = useState([]);
   const [testProgress, setTestProgress] = useState(0);
@@ -27,7 +29,7 @@ const RunningTests = () => {
     try {
       const filter = 'running'; // Your filter parameter value
       let response = await fetch(
-        `http://127.0.0.1:8000/testsApi/measurmentsStatus/?filter=${filter}`
+        `${BASE_URL}/testsApi/measurmentsStatus/?filter=${filter}`
       );
       let data = await response.json();
       console.log('Running Tests DATA:', data);

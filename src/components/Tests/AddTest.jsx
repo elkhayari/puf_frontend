@@ -5,7 +5,7 @@ import { Header } from '../index';
 import { testTypes } from '../../data/dummy';
 
 import TextField from '@mui/material/TextField';
-import {BASE_URL} from '../../../config'
+import {BASE_URL} from '../../config'
 
 const AddTest = ({ user }) => {
   const [loading, setLoading] = useState(false);

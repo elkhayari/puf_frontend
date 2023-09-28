@@ -7,6 +7,7 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
+import {BASE_URL} from '../../config'
 
 const TestDetail = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const TestDetail = () => {
 
   const requestTestById = async (id) => {
     // `http://127.0.0.1:8000/api/tests/?board=${board}&memory=${memory}`
-    let response = await fetch(`http://127.0.0.1:8000/api/tests/${testId}`);
+    let response = await fetch(`${BASE_URL}/api/tests/${testId}`);
     let data = await response.json();
     console.log('DATA:', data);
     setTest(data);

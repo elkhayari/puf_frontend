@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper';
 import { Header } from '../index';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import { makeStyles } from '@material-ui/core';
+import { BASE_URL } from '../../config'
 
 const WaitingTests = () => {
   const [waitingTests, setWaitingTests] = useState([]);
@@ -32,7 +33,7 @@ const WaitingTests = () => {
     try {
       const filter = 'waiting'; // Your filter parameter value
       let response = await fetch(
-        `http://127.0.0.1:8000/testsApi/measurmentsStatus/?filter=${filter}`
+        `${BASE_URL}/testsApi/measurmentsStatus/?filter=${filter}`
       );
       let data = await response.json();
       console.log('Waiting Tests DATA:', data);

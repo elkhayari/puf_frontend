@@ -23,6 +23,7 @@ import Alert from '@mui/material/Alert';
 
 import { styled } from '@mui/material/styles';
 import { useStateContext } from '../../contexts/ContextProvider';
+import { BASE_URL } from '../../config'
 
 import {
   memoryTypes,
@@ -64,8 +65,7 @@ function Row(props) {
       body: JSON.stringify(row)
     };
 
-    fetch(
-      `http://127.0.0.1:8000/testsApi/tests/${row.id}`,
+    fetch(`${BASE_URL}/testsApi/tests/${row.id}`,
       requestOptions
     ).then((data) => {
       console.log(data); // JSON data parsed by `data.json()` call
