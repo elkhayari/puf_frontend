@@ -24,6 +24,7 @@ import MemoryIcon from '@mui/icons-material/Memory';
 import { Checkbox, Button } from '@mui/material';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
+import { BASE_URL } from '../../config';
 import { v5 as uuidv5 } from 'uuid';
 const NAMESPACE = '1b671a64-40d5-491e-99b0-da01ff1f3341'; // Example namespace UUID
 
@@ -76,7 +77,7 @@ const Robustness = (props) => {
 
   async function fetchDisabledIds(measGroupKey) {
     const response = await fetch(
-      `http://127.0.0.1:8000/brokerApi/check-heatmap-ids/?meas_id=${measGroupKey}`
+      `${BASE_URL}/brokerApi/check-heatmap-ids/?meas_id=${measGroupKey}`
     );
     const data = await response.json();
     if (data.exists) {
@@ -149,7 +150,7 @@ const Robustness = (props) => {
     // Send the selectedRows to the backend
     try {
       const response = await fetch(
-        'http://127.0.0.1:8000/brokerApi/generate-rebustness-heatmaps/',
+        `${BASE_URL}/brokerApi/generate-rebustness-heatmaps/`,
         {
           method: 'POST',
           headers: {
@@ -214,7 +215,7 @@ const Robustness = (props) => {
       // Generate a unique UUID based on the concatenated string
       const groupKey = uuidv5(concatenatedIds, NAMESPACE);
       const response = await fetch(
-        `http://127.0.0.1:8000/brokerApi/robustness-heatmap/?evaluation_id=${evaluation_id}&measurement_key=${groupKey}`
+        `${BASE_URL}/brokerApi/robustness-heatmap/?evaluation_id=${evaluation_id}&measurement_key=${groupKey}`
       );
       const data = await response.json();
       console.log('data from existing heatmaps:::');
