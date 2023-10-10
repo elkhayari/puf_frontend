@@ -15,7 +15,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import { format } from 'date-fns'; // Import the format function from date-fns
 import { Header } from '../../components';
-import {BASE_URL} from '../../config'
+import { BASE_URL } from '../../config';
 
 const useStyles = makeStyles((theme) => ({
   completed: {

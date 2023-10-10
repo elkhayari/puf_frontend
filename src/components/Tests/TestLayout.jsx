@@ -23,7 +23,7 @@ import Alert from '@mui/material/Alert';
 
 import { styled } from '@mui/material/styles';
 import { useStateContext } from '../../contexts/ContextProvider';
-import { BASE_URL } from '../../config'
+import { BASE_URL } from '../../config';
 
 import {
   memoryTypes,
@@ -65,12 +65,12 @@ function Row(props) {
       body: JSON.stringify(row)
     };
 
-    fetch(`${BASE_URL}/testsApi/tests/${row.id}`,
-      requestOptions
-    ).then((data) => {
-      console.log(data); // JSON data parsed by `data.json()` call
-      navigate('/tests', { replace: true });
-    });
+    fetch(`${BASE_URL}/testsApi/tests/${row.id}`, requestOptions).then(
+      (data) => {
+        console.log(data); // JSON data parsed by `data.json()` call
+        navigate('/tests', { replace: true });
+      }
+    );
   };
 
   const editTest = (id) => {

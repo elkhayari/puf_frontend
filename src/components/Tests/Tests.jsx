@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { TestLayout, Spinner } from '../index';
-import { BASE_URL } from '../../config'
+import { BASE_URL } from '../../config';
 
 const Tests = () => {
   const [loading, setLoading] = useState(false);

@@ -330,16 +330,13 @@ export default function UniformityTable(props) {
     console.log('groupedFilteredData');
     console.log(groupedFilteredData);
     //generate-heatmaps/
-    const response = await fetch(
-      `${BASE_URL}/brokerApi/generate-heatmaps/`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
-      }
-    );
+    const response = await fetch(`${BASE_URL}/brokerApi/generate-heatmaps/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestData)
+    });
     const data = await response.json();
 
     console.log(data);

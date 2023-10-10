@@ -10,7 +10,7 @@ import Paper from '@mui/material/Paper';
 import { Header } from '../index';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import { makeStyles } from '@material-ui/core';
-import { BASE_URL } from '../../config'
+import { BASE_URL } from '../../config';
 
 const WaitingTests = () => {
   const [waitingTests, setWaitingTests] = useState([]);

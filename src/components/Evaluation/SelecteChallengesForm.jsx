@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BASE_URL} from '../../config'
+import { BASE_URL } from '../../config';
 import {
   FormControl,
   InputLabel,
@@ -105,16 +105,13 @@ const SelectChallengesForm = ({ isStepWarning }) => {
       uniquenessChallenges: uniformityChallenges,
       robustnessChallenges: robustnessChallenges
     };
-    const response = await fetch(
-      `${BASE_URL}/brokerApi/trigger-evaluation/`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
-      }
-    );
+    const response = await fetch(`${BASE_URL}/brokerApi/trigger-evaluation/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestData)
+    });
     const data = await response.json();
     const taskId = data.task_id;
     console.log(

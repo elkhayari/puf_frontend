@@ -37,6 +37,10 @@ export const testTypes = [
     name: 'Reliability test'
   },
   {
+    field: 'Reliability_2',
+    name: 'Reliability test 2'
+  },
+  {
     field: 'readLatency',
     name: 'Read latency test'
   },

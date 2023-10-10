@@ -88,6 +88,7 @@ const Robustness = (props) => {
 
   useEffect(() => {
     // Extracting all measurement ids from the provided object
+    //TODO : FIX map (array is empty)
     data.flatMap((group) =>
       group.memories.flatMap((memoryGroup) =>
         memoryGroup.initialValueKey.flatMap((initialValueGroup) =>
@@ -95,12 +96,17 @@ const Robustness = (props) => {
             addressesGroup.chipInstances.flatMap((chipGroup) =>
               chipGroup.challenges.flatMap((challengeGroup) =>
                 challengeGroup.challenge_measuremenst.filter((meas) => {
-                  const concatenatedIds = meas.id_filename_list
-                    .map((item) => item.id)
-                    .join('');
-                  const groupKeyForMeas = uuidv5(concatenatedIds, NAMESPACE);
-                  console.log(groupKeyForMeas);
-                  fetchDisabledIds(groupKeyForMeas);
+                  console.log("meas", meas)
+                  if (meas.robustness !== false && meas.id_filename_list) {
+                    console.log("meas", meas)
+                    const concatenatedIds = meas.id_filename_list
+                      .map((item) => item.id)
+                      .join('');
+                    const groupKeyForMeas = uuidv5(concatenatedIds, NAMESPACE);
+                    console.log(groupKeyForMeas);
+                    fetchDisabledIds(groupKeyForMeas);
+                  }
+                  console.log("good")
                 })
               )
             )
@@ -120,21 +126,23 @@ const Robustness = (props) => {
             addressesGroup.chipInstances.flatMap((chipGroup) =>
               chipGroup.challenges.flatMap((challengeGroup) =>
                 challengeGroup.challenge_measuremenst.filter((meas) => {
-                  const concatenatedIds = meas.id_filename_list
-                    .map((item) => item.id)
-                    .join('');
-                  const groupKeyForMeas = uuidv5(concatenatedIds, NAMESPACE);
-                  console.log(groupKeyForMeas);
-                  if (selected.includes(groupKeyForMeas)) {
-                    selectedRows.push({
-                      [groupKeyForMeas]: {
-                        id_filename_list: meas.id_filename_list,
-                        initialValue: initialValueGroup.initialValue,
-                        startAddress: addressesGroup.startAddress,
-                        stopAddress: addressesGroup.stopAddress,
-                        evaluationId: evaluation_id
-                      }
-                    });
+                  if (meas.robustness !== false && meas.id_filename_list) {
+                    const concatenatedIds = meas.id_filename_list
+                      .map((item) => item.id)
+                      .join('');
+                    const groupKeyForMeas = uuidv5(concatenatedIds, NAMESPACE);
+                    console.log(groupKeyForMeas);
+                    if (selected.includes(groupKeyForMeas)) {
+                      selectedRows.push({
+                        [groupKeyForMeas]: {
+                          id_filename_list: meas.id_filename_list,
+                          initialValue: initialValueGroup.initialValue,
+                          startAddress: addressesGroup.startAddress,
+                          stopAddress: addressesGroup.stopAddress,
+                          evaluationId: evaluation_id
+                        }
+                      });
+                    }
                   }
 
                   //selected.includes(groupKeyForMeas) ? { [groupKeyForMeas]: meas.id_filename_list } : null;

@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
-import {BASE_URL} from '../../config'
+import { BASE_URL } from '../../config';
 
 const TestDetail = () => {
   const navigate = useNavigate();

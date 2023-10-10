@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Header } from '../index';
 import './HourglassIcon.css';
-import {BASE_URL} from '../../config'
+import { BASE_URL } from '../../config';
 
 const RunningTests = () => {
   const [runningTests, setRunningTests] = useState([]);

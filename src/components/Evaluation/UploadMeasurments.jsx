@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Input from '@mui/material/Input';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { BASE_URL } from '../../config'
+import { BASE_URL } from '../../config';
 
 const UploadMeasurments = () => {
   const [files, setFiles] = useState([]);

@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AiTwotoneDelete } from 'react-icons/ai';
 import { CiEdit } from 'react-icons/ci';
 import { Refresh } from '@mui/icons-material';
-import {BASE_URL} from '../../config'
+import { BASE_URL } from '../../config';
 
 const TestItem = ({ test }) => {
   const [testHovered, setTestHovered] = useState(false);
@@ -27,12 +27,10 @@ const TestItem = ({ test }) => {
         // 'Content-Type': 'application/x-www-form-urlencoded',
       }
     };
-    fetch(`${BASE_URL}api/tests/${id}`, requestOptions).then(
-      (data) => {
-        console.log(data); // JSON data parsed by `data.json()` call
-        navigate('/tests');
-      }
-    );
+    fetch(`${BASE_URL}api/tests/${id}`, requestOptions).then((data) => {
+      console.log(data); // JSON data parsed by `data.json()` call
+      navigate('/tests');
+    });
   };
 
   const editTest = (id) => {

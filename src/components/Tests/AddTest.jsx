@@ -5,7 +5,7 @@ import { Header } from '../index';
 import { testTypes } from '../../data/dummy';
 
 import TextField from '@mui/material/TextField';
-import {BASE_URL} from '../../config'
+import { BASE_URL } from '../../config';
 
 const AddTest = ({ user }) => {
   const [loading, setLoading] = useState(false);
@@ -97,7 +97,7 @@ const AddTest = ({ user }) => {
 
       const data = values;
       console.log(data);
-      
+
       const requestOptions = {
         method: 'POST',
         headers: {
@@ -106,12 +106,10 @@ const AddTest = ({ user }) => {
         },
         body: JSON.stringify(data)
       };
-      fetch(`${BASE_URL}/testsApi/tests/`, requestOptions).then(
-        (data) => {
-          console.log(data); // JSON data parsed by `data.json()` call
-          navigate('/tests');
-        }
-      );
+      fetch(`${BASE_URL}/testsApi/tests/`, requestOptions).then((data) => {
+        console.log(data); // JSON data parsed by `data.json()` call
+        navigate('/tests');
+      });
     } else {
       console.log('Input missing ');
       setFields(true);

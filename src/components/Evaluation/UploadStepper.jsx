@@ -252,15 +252,11 @@ const UploadStepper = () => {
 
         try {
           axios
-            .post(
-              `${BASE_URL}/uploadMeasurmentsApi/uploadMeas/`,
-              formData,
-              {
-                headers: {
-                  'Content-Type': 'multipart/form-data'
-                }
+            .post(`${BASE_URL}/uploadMeasurmentsApi/uploadMeas/`, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
               }
-            )
+            })
             .then((response) => {
               console.log(response);
               console.log('File Uploaded Successfully');
