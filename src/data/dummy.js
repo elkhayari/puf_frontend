@@ -37,10 +37,6 @@ export const testTypes = [
     name: 'Reliability test'
   },
   {
-    field: 'Reliability_2',
-    name: 'Reliability test 2'
-  },
-  {
     field: 'readLatency',
     name: 'Read latency test'
   },
@@ -50,7 +46,7 @@ export const testTypes = [
   },
   {
     field: 'rowHammering',
-    name: 'Row Hammering test'
+    name: 'Row hammering test'
   }
 ];
 export const gridOrderImage = (props) => (

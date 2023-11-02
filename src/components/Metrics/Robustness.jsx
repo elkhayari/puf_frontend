@@ -96,9 +96,9 @@ const Robustness = (props) => {
             addressesGroup.chipInstances.flatMap((chipGroup) =>
               chipGroup.challenges.flatMap((challengeGroup) =>
                 challengeGroup.challenge_measuremenst.filter((meas) => {
-                  console.log("meas", meas)
+                  console.log('meas', meas);
                   if (meas.robustness !== false && meas.id_filename_list) {
-                    console.log("meas", meas)
+                    console.log('meas', meas);
                     const concatenatedIds = meas.id_filename_list
                       .map((item) => item.id)
                       .join('');
@@ -106,7 +106,7 @@ const Robustness = (props) => {
                     console.log(groupKeyForMeas);
                     fetchDisabledIds(groupKeyForMeas);
                   }
-                  console.log("good")
+                  console.log('good');
                 })
               )
             )
@@ -181,6 +181,8 @@ const Robustness = (props) => {
 
   const isMeasSelected = (meas_list) => {
     // Concatenate all the ids
+    console.log('meas_list')
+    console.log(meas_list)
     const concatenatedIds = meas_list.map((item) => item.id).join('');
 
     // Generate a unique UUID based on the concatenated string

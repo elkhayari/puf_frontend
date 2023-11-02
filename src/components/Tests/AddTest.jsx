@@ -17,6 +17,7 @@ const AddTest = ({ user }) => {
   const [values, setValues] = useState({
     title: '',
     initialValue: '0x55',
+    initialValue_1: '0xAA',
     testType: '',
     startAddress: 0,
     stopAddress: 99,
@@ -25,12 +26,15 @@ const AddTest = ({ user }) => {
     voltageChecked: false,
     voltage: 12,
     dataSetupTime: '15',
+    rowOffset: 32,
+    HammeringIterations: 1,
     iterations: 1
   });
 
   const [errors, setErrors] = React.useState({
     title: '',
     initialValue: '',
+    initialValue_1: '',
     testType: '',
     startAddress: '',
     stopAddress: '',
@@ -44,6 +48,9 @@ const AddTest = ({ user }) => {
     let newErrors = {};
     newErrors.title = values.title ? '' : 'This field is required.';
     newErrors.initialValue = values.initialValue
+      ? ''
+      : 'This field is required.';
+      newErrors.initialValue_1 = values.initialValue_1
       ? ''
       : 'This field is required.';
     newErrors.testType = values.testType ? '' : 'This field is required.';
@@ -145,8 +152,8 @@ const AddTest = ({ user }) => {
             </div>
 
             {/* TEST type options */}
-            <div className="grid md:grid-cols-2 md:gap-6">
-              <div className="relative z-0 w-full mb-6 group">
+            <div className="grid grid-cols-2 gap-4 my-8">
+              <div className="flex">
                 <label for="underline_select" className="sr-only">
                   Underline select
                 </label>
@@ -164,12 +171,30 @@ const AddTest = ({ user }) => {
                   ))}
                 </select>
               </div>
+              {(values.testType === 'Write latency test' ||
+                values.testType === 'Row hammering test') && (
+                <div className="flex">
+                  <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                    Initial Value 1
+                  </span>
+                  <input
+                    type="text"
+                    id="website-admin"
+                    className="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    value={values.initialValue_1}
+                    placeholder={values.initialValue_1}
+                    onChange={handleChange('initialValue_1')}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-3 gap-4 my-8">
               <div className="flex">
                 <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                  Initial Value
+                {values.testType === 'Row hammering test'
+                ? 'Hammering Value'
+                : 'Initial Value'}
                 </span>
                 <input
                   type="text"
@@ -281,6 +306,36 @@ const AddTest = ({ user }) => {
                 onChange={handleChange('dataSetupTime')}
               />
             </div>
+
+            {values.testType === 'Row hammering test' && (
+              <>
+                <div className="flex mt-8">
+                  <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                    Row Offset
+                  </span>
+                  <input
+                    type="number"
+                    className="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    value={values.rowOffset}
+                    placeholder="16, 32, 64..."
+                    onChange={handleChange('rowOffset')}
+                  />
+                </div>
+
+                <div className="flex mt-4">
+                  <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                    Hammer Iterations
+                  </span>
+                  <input
+                    type="number"
+                    className="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    value={values.HammeringIterations}
+                    placeholder="Number of iterations"
+                    onChange={handleChange('HammeringIterations')}
+                  />
+                </div>
+              </>
+            )}
 
             <div className="grid md:grid-cols-3 md:gap-6 my-4 mt-8">
               <TextField

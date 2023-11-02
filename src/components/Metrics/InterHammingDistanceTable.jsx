@@ -93,12 +93,11 @@ const InterHammingDistanceTable = (props) => {
         </Table>
       </TableContainer>
 
-      {group.inter_hamming_distances.length === 0 ? (
+      {/* {group.inter_hamming_distances.length === 0 ? (
         <p>error</p>
       ) : (
-        <UniquenessHistogram group={group}/> 
-      )}
-      
+        <UniquenessHistogram group={group} />
+      )} */}
     </>
   );
 };

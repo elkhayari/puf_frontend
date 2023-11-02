@@ -34,11 +34,13 @@ import {
 
 function Row(props) {
   const { row } = props;
-  const { connectedDevices } = useStateContext();
+  const { connectedDevices, setConnectedDevices } = useStateContext();
   const [open, setOpen] = useState(false);
   const [response, setResponse] = useState(null);
   //const [connectedDevices, setConnectedDevices] = useState([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const [values, setValues] = useState({
     memoryType: '',
@@ -68,7 +70,7 @@ function Row(props) {
     fetch(`${BASE_URL}/testsApi/tests/${row.id}`, requestOptions).then(
       (data) => {
         console.log(data); // JSON data parsed by `data.json()` call
-        navigate('/tests', { replace: true });
+        navigate('/tests');
       }
     );
   };
@@ -101,7 +103,8 @@ function Row(props) {
       const json = await res.json();
       setResponse(json);
       console.log(response);
-      //navigate('/tests/waiting');
+      fetchConnectedDevices()
+      navigate('/waitingTests');
     } catch (err) {
       console.log(err);
     }
@@ -168,6 +171,25 @@ function Row(props) {
 
   console.log(errors.memoryLabel);
 
+  const fetchConnectedDevices = () => {
+   
+    fetch('http://localhost:8000/deviceApi/connectedDevice/')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setConnectedDevices(data);
+      })
+      .catch(error => {
+        console.error('Error fetching connected devices:', error);
+        
+      });
+  };
+
+
   return (
     <React.Fragment>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -216,14 +238,14 @@ function Row(props) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography
-                className="mr-2 text-gray-900 font-semibold mb-1"
+                className="mr-2 text-gray-900 font-bold mb-1"
                 gutterBottom
               >
                 Characteristics
               </Typography>
               <Table size="small" aria-label="moreInfo">
                 <TableHead>
-                  <TableRow>
+                  <TableRow className="bg-blue-300 text-white">
                     <TableCell align="left">Start Address</TableCell>
                     <TableCell align="left">Stop Address</TableCell>
                     <TableCell align="left">Voltage</TableCell>
@@ -232,7 +254,7 @@ function Row(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <TableRow>
+                  <TableRow className="hover:bg-gray-100">
                     <TableCell align="left">{row.startAddress}</TableCell>
                     <TableCell align="left">{row.stopAddress}</TableCell>
                     <TableCell align="left">{row.voltage}</TableCell>
@@ -240,7 +262,30 @@ function Row(props) {
                     <TableCell align="left">{row.dataSetupTime}</TableCell>
                   </TableRow>
                 </TableBody>
+               
               </Table>
+              <br />
+
+              {
+                  row.testType === 'Row hammering test' && (
+                    <Table size="small" aria-label="moreInfo">
+                    <TableHead>
+                  <TableRow className="bg-blue-300 text-white">
+                    <TableCell align="left">Hammering value</TableCell>
+                          <TableCell align="left">Hammering times</TableCell>
+                          <TableCell align="left">Row offset </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell align="left">{row.initialValue}</TableCell>
+                          <TableCell align="left">{row.HammeringIterations}</TableCell>
+                          <TableCell align="left">{row.rowOffset}</TableCell>
+                  </TableRow>
+                </TableBody>
+                </Table>
+                  )
+                }
 
               <br />
               <Box xs={{ margin: 1 }}>
@@ -343,18 +388,26 @@ function Row(props) {
                 >
                   Select Board:
                 </Typography>
+                
                 <select
                   className="mr-2 py-2 px-4 border cursor-pointer  border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   value={selectedDeviceId}
                   onChange={handleOptionChange}
+
                 >
                   <option value=""></option>
-                  {connectedDevices.map((device) => (
-                    <option key={device.id} value={device.id}>
-                      {device.device_label}
+                  {connectedDevices.map((device) => 
+                     (
+                      <option key={device.id} value={device.id} style={{ color: device.is_busy ? 'orange' : 'black' }}
+                      disabled={device.is_busy}>
+                        {device.serial_number}
                     </option>
-                  ))}
+                    
+                    )
+                  
+                  )}
                 </select>
+                      
                 <button
                   className={`ml-auto py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                     !selectedDeviceId
@@ -365,22 +418,13 @@ function Row(props) {
                     e.stopPropagation();
                     startTest(row.id);
                   }}
-                  disabled={selectedDeviceId === ''}
+                 disabled={selectedDeviceId === ''} 
                 >
                   START
                 </button>
               </div>
 
-              {/* <Button
-                className="pt-5"
-                size="medium"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  startTest(row.id);
-                }}
-              >
-                Start
-              </Button> */}
+             
             </Box>
           </Collapse>
         </TableCell>
